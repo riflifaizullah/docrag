@@ -1,0 +1,266 @@
+@* Ported near-verbatim from the mockup's sidebar (project/Main.dc.html
+   lines ~118-196), swapping its proprietary setState calls for real Blazor
+   parameters/EventCallbacks. Phase 2: real GET /documents + GET /sessions
+   data, one unified search bar (item 3 -- NOT in the original mockup, which
+   only searched documents; the user explicitly asked for chat history
+   search too), "+ Chat baru" creates a real session, and each session row
+   IS its own click target (item 20 -- no separate "Buka" button). *@
+@inject ApiClient Api
+@inject IJSRuntime JS
+@inject ChatState Chat
+@implements IDisposable
+
+<div style="width: 284px; flex-shrink: 0; height: 100%; display: flex; flex-direction: column; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 26px 18px 18px; position: relative;">
+
+    <button class="rag-sidebar-collapse" @onclick="OnCollapse" aria-label="Ciutkan sidebar">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </button>
+
+    <div style="display: flex; align-items: center; gap: 11px; margin-bottom: 26px;">
+        <div style="padding: 5px 9px; border-radius: 10px; background: var(--accent); color: var(--accent-text); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">RAG</div>
+        <div style="flex-grow: 1; min-width: 0;">
+            <div class="rag-brand-title" style="font-size: 16.5px; font-weight: 700; line-height: 1.15;">RAG SYSTEM</div>
+            <div style="font-size: 11px; color: var(--text-faint); margin-top: 1px;">Pustaka Dokumen</div>
+        </div>
+        @* Phase 5 dark/light toggle -- just flips the `data-theme` attribute
+           JS already reads on load; every color in app.css is already a
+           custom property, so nothing else needs to change per-theme. *@
+        <button class="rag-icon-btn" style="width: 30px; height: 30px; flex-shrink: 0;" @onclick="ToggleThemeAsync" aria-label="Ganti tema">
+            @if (_isLight)
+            {
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path></svg>
+            }
+            else
+            {
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.9"></circle><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path></svg>
+            }
+        </button>
+    </div>
+
+    <button class="rag-btn-primary" style="width: 100%; padding: 10px 12px; border-radius: 10px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 22px;"
+            @onclick="CreateNewChatAsync" disabled="@Chat.IsEmpty"
+            title="@(Chat.IsEmpty ? "Chat saat ini masih kosong" : null)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="var(--accent-text)" stroke-width="2.2" stroke-linecap="round"></path></svg>
+        Chat baru
+    </button>
+
+    <div style="display: flex; gap: 4px; padding: 3px; background: var(--bg); border-radius: 10px; margin-bottom: 12px;">
+        <button class="rag-tab @(ActiveTab == "riwayat" ? "active" : "")" @onclick='() => SelectTab("riwayat")'>Riwayat</button>
+        <button class="rag-tab @(ActiveTab == "dokumen" ? "active" : "")" @onclick='() => SelectTab("dokumen")'>Dokumen</button>
+    </div>
+
+    @* Unified search bar -- filters whichever list is currently visible.
+       Not in the original mockup (which only searched documents); added
+       per explicit user request to also search chat history by title. *@
+    <div style="position: relative; margin-bottom: 10px; flex-shrink: 0;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="position: absolute; left: 10px; top: 10px; pointer-events: none;"><circle cx="11" cy="11" r="7" stroke="var(--text-faint)" stroke-width="2"></circle><path d="M21 21l-4.3-4.3" stroke="var(--text-faint)" stroke-width="2" stroke-linecap="round"></path></svg>
+        <input class="rag-input" placeholder="@(ActiveTab == "riwayat" ? "Cari riwayat chat..." : "Cari dokumen...")"
+               style="width: 100%; padding: 8px 10px 8px 30px; border-radius: 9px; font-size: 12.5px;"
+               @bind="_searchQuery" @bind:event="oninput" />
+    </div>
+
+    @if (ActiveTab == "riwayat")
+    {
+        <div class="rag-scroll" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto;">
+            @if (_sessions is null)
+            {
+                <p style="font-size: 11.5px; color: var(--text-faint); padding: 0 4px;">Memuat riwayat...</p>
+            }
+            else
+            {
+                @foreach (var session in FilteredSessions)
+                {
+                    @* Disabled while Chat.IsBusy (code review, defense in depth):
+                       SelectSessionAsync already no-ops in this state, but a
+                       disabled row also stops the click from looking like it
+                       did something, and stops two overlapping session
+                       switches from ever being reachable from the UI. *@
+                    <button class="rag-session-row @(session.SessionId == SelectedSessionId ? "active" : "")"
+                            disabled="@Chat.IsBusy"
+                            @onclick="() => SelectSession(session.SessionId)">
+                        <div style="width: 6px; height: 6px; border-radius: 50%; background: @(session.SessionId == SelectedSessionId ? "var(--accent)" : "transparent"); flex-shrink: 0;"></div>
+                        <div style="min-width: 0;">
+                            <div style="font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@session.Title</div>
+                            <div style="font-size: 11px; color: var(--text-faint); margin-top: 1px;">@FormatRelativeTime(session.CreatedAt) &middot; @session.TotalTokens token</div>
+                        </div>
+                    </button>
+                }
+                @if (!FilteredSessions.Any())
+                {
+                    <p style="font-size: 11.5px; color: var(--text-faint); padding: 0 4px;">Tidak ada hasil.</p>
+                }
+            }
+        </div>
+    }
+    else
+    {
+        <div style="display: flex; flex-direction: column; min-height: 0; flex-grow: 1;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 700; color: var(--text-faint);">@(_documents?.Count.ToString() ?? "...") dokumen</div>
+                <button class="rag-icon-btn" style="width: 27px; height: 27px;" aria-label="Sinkronkan dokumen">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M20 11A8 8 0 1 0 18.6 16" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round"></path><path d="M20 4v7h-7" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+            </div>
+
+            <div class="rag-scroll" style="display: flex; flex-direction: column; gap: 2px; overflow-y: auto; flex-grow: 1;">
+                @if (_documents is null)
+                {
+                    <p style="font-size: 11.5px; color: var(--text-faint); padding: 0 4px;">Memuat dokumen...</p>
+                }
+                else
+                {
+                    @foreach (var doc in FilteredDocuments)
+                    {
+                        <button class="rag-doc-row @(doc.Filename == SelectedDocument ? "selected" : "")" title="@doc.Filename"
+                                @onclick="() => SelectDocument(doc.Filename)">
+                            <svg class="rag-doc-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 2h8l5 5v15H6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path></svg>
+                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@doc.Filename</span>
+                        </button>
+                    }
+                    @if (!FilteredDocuments.Any())
+                    {
+                        <p style="font-size: 11.5px; color: var(--text-faint); padding: 0 4px;">Tidak ada hasil.</p>
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    // No local default: Index.razor always supplies this before first
+    // render, and it's the single source of truth (see SelectTab below).
+    [Parameter] public string ActiveTab { get; set; } = "";
+    [Parameter] public EventCallback<string> ActiveTabChanged { get; set; }
+    [Parameter] public EventCallback OnCollapse { get; set; }
+    [Parameter] public string? SelectedSessionId { get; set; }
+    [Parameter] public EventCallback<string?> SelectedSessionIdChanged { get; set; }
+    [Parameter] public string? SelectedDocument { get; set; }
+    [Parameter] public EventCallback<string> SelectedDocumentChanged { get; set; }
+
+    private List<DocumentInfo>? _documents;
+    private List<SessionSummary>? _sessions;
+    private string _searchQuery = "";
+    private bool _isLight;
+
+    // ChatState.StartNewChat()/AskAsync()/SelectSessionAsync() all fire this
+    // from ChatColumn -- a sibling component sharing the same Scoped
+    // instance -- so the session list, "Chat baru"'s disabled state, and a
+    // session's title (computed fresh server-side from its first message,
+    // so it flips from "(sesi kosong)" to the real topic the moment one
+    // exists) all stay current without a manual refresh.
+    protected override void OnInitialized()
+    {
+        Chat.Changed += OnChatChanged;
+        Chat.BusyChanged += OnBusyChanged;
+    }
+
+    private void OnChatChanged() => InvokeAsync(async () =>
+    {
+        _sessions = await Api.GetSessionsAsync();
+        StateHasChanged();
+    });
+
+    // Just a redraw, no refetch -- see ChatState.BusyChanged's comment for
+    // why this is kept separate from Changed. Keeps session rows' disabled
+    // state (below) current for the whole duration of an in-flight ask.
+    private void OnBusyChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose()
+    {
+        Chat.Changed -= OnChatChanged;
+        Chat.BusyChanged -= OnBusyChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        // The <html data-theme> attribute is already set synchronously by
+        // _Layout.cshtml's inline script before Blazor connects -- this just
+        // reads that same saved value back so the toggle icon matches it.
+        var saved = await JS.InvokeAsync<string>("ragTheme.get");
+        _isLight = saved == "light";
+        StateHasChanged();
+    }
+
+    private async Task ToggleThemeAsync()
+    {
+        _isLight = !_isLight;
+        await JS.InvokeVoidAsync("ragTheme.set", _isLight ? "light" : "dark");
+    }
+
+    private IEnumerable<DocumentInfo> FilteredDocuments =>
+        _documents is null ? []
+        : string.IsNullOrWhiteSpace(_searchQuery) ? _documents
+        : _documents.Where(d => d.Filename.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase));
+
+    private IEnumerable<SessionSummary> FilteredSessions =>
+        _sessions is null ? []
+        : string.IsNullOrWhiteSpace(_searchQuery) ? _sessions
+        : _sessions.Where(s => s.Title.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase));
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Both calls are independent -- fetch concurrently rather than
+        // awaiting one after the other (a thousand-plus documents + the session
+        // list, no reason to serialize two unrelated GETs).
+        var documentsTask = Api.GetDocumentsAsync();
+        var sessionsTask = Api.GetSessionsAsync();
+        await Task.WhenAll(documentsTask, sessionsTask);
+        _documents = await documentsTask;
+        _sessions = await sessionsTask;
+    }
+
+    // Deliberately does NOT assign ActiveTab locally before invoking the
+    // callback -- found in code review: mutating an inbound [Parameter]
+    // directly creates two sources of truth that would diverge the moment
+    // ActiveTabChanged's handler becomes async/conditional (a confirmation
+    // step). The parent re-renders and passes ActiveTab back down on every
+    // callback today, so this is already sufficient. Same reasoning applies
+    // to SelectedSessionId below.
+    private async Task SelectTab(string tab)
+    {
+        // Clear the shared search query on tab switch (found in code review):
+        // a query typed to filter documents almost certainly wasn't meant to
+        // also filter chat history two clicks later -- leaving it would read
+        // as a leftover, not a deliberate cross-tab refinement.
+        _searchQuery = "";
+        await ActiveTabChanged.InvokeAsync(tab);
+    }
+
+    private async Task SelectSession(string sessionId)
+    {
+        await SelectedSessionIdChanged.InvokeAsync(sessionId);
+    }
+
+    private async Task SelectDocument(string filename)
+    {
+        await SelectedDocumentChanged.InvokeAsync(filename);
+    }
+
+    // No API call here anymore, and no optimistic session-row insert --
+    // found and fixed: this used to call POST /sessions immediately, same
+    // as the old (now-removed) ChatState.InitializeAsync() did on every
+    // page load, which is why "(sesi kosong)" rows piled up in the
+    // database. A session is now only ever created lazily, in
+    // ChatState.AskAsync, the moment a question is actually sent -- this
+    // just resets local chat state and clears the sidebar's selection.
+    private Task CreateNewChatAsync()
+    {
+        Chat.StartNewChat();
+        return SelectedSessionIdChanged.InvokeAsync(null);
+    }
+
+    private static string FormatRelativeTime(string createdAtUtc)
+    {
+        if (!DateTime.TryParse(createdAtUtc, null, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal, out var createdAt))
+            return createdAtUtc;
+
+        var delta = DateTime.UtcNow - createdAt;
+        if (delta.TotalMinutes < 1) return "Baru saja";
+        if (delta.TotalHours < 1) return $"{(int)delta.TotalMinutes} menit lalu";
+        if (delta.TotalDays < 1) return $"{(int)delta.TotalHours} jam lalu";
+        if (delta.TotalDays < 2) return "Kemarin";
+        return $"{(int)delta.TotalDays} hari lalu";
+    }
+}

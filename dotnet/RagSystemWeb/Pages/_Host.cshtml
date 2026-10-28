@@ -1,0 +1,16 @@
+@page "/"
+@namespace RagSystemWeb.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout";
+}
+
+@* "Server" not "ServerPrerendered": resolves the documented Phase-0 landmine
+   (State/ChatState.cs, plan file Phase 3 section) -- ServerPrerendered runs
+   the component tree through two separate DI scopes (a throwaway prerender
+   pass, then the real live circuit), and ChatState.InitializeAsync() isn't
+   idempotent (POSTs /sessions), so it would create one orphaned backend
+   session per page load. No SEO/first-paint benefit lost that matters here
+   -- this is a local chat tool behind a backend on localhost, not a public
+   content site. *@
+<component type="typeof(App)" render-mode="Server" />

@@ -1,0 +1,41 @@
+@* Phase 4: real PDF preview, ported from the mockup's 336px right panel.
+   The browser's native PDF renderer does the work -- no PDF.js, no library --
+   which only works because document_download() now sends
+   Content-Disposition: inline (backend/app/api.py:220, fixed alongside this).
+   Drag-to-resize added after Phase 5: the left edge is a handle, wired
+   entirely in JS (wwwroot/js/resize.js) so dragging doesn't round-trip
+   every mousemove over the Blazor Server circuit. *@
+@using RagSystemWeb.Services
+@inject IJSRuntime JS
+
+<div @ref="_panelRef" style="width: 336px; min-width: 260px; max-width: 800px; flex-shrink: 0; height: 100%; display: flex; flex-direction: column; background: var(--bg-elevated); border-left: 1px solid var(--border); position: relative;">
+    <div @ref="_handleRef" style="position: absolute; left: -3px; top: 0; width: 6px; height: 100%; cursor: ew-resize; z-index: 1;" aria-hidden="true"></div>
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 16px 18px; border-bottom: 1px solid var(--border); flex-shrink: 0;">
+        <div style="font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="@Filename">@Filename</div>
+        <div style="display: flex; gap: 6px; flex-shrink: 0;">
+            <a class="rag-icon-btn" style="width: 27px; height: 27px;" href="@DownloadUrl" download aria-label="Unduh PDF">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </a>
+            <button class="rag-icon-btn" style="width: 27px; height: 27px;" @onclick="OnClose" aria-label="Tutup">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path></svg>
+            </button>
+        </div>
+    </div>
+    <iframe src="@DownloadUrl" style="flex-grow: 1; width: 100%; border: none;" title="@Filename"></iframe>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Filename { get; set; } = "";
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private ElementReference _panelRef;
+    private ElementReference _handleRef;
+
+    private string DownloadUrl => $"{ApiClient.BackendBaseUrl}/documents/{Uri.EscapeDataString(Filename)}/download";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        await JS.InvokeVoidAsync("ragResize.init", _handleRef, _panelRef, "rag-preview-width", 260, 800);
+    }
+}

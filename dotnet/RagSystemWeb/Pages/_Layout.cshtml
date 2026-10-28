@@ -1,0 +1,35 @@
+@namespace RagSystemWeb.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAG SYSTEM</title>
+    <base href="~/" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    @* Inline + synchronous so the saved theme applies before first paint --
+       an external/deferred script would flash the default dark theme first. *@
+    <script>
+        (function () {
+            var saved = 'dark';
+            try { saved = localStorage.getItem('rag-theme') || 'dark'; } catch (e) { }
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+</head>
+<body>
+    @RenderBody()
+
+    <div id="blazor-error-ui">
+        Terjadi kesalahan tak terduga.
+        <a href="" class="reload">Muat ulang</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="js/theme.js"></script>
+    <script src="js/resize.js"></script>
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>

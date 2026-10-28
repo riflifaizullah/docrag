@@ -1,0 +1,25 @@
+# Documents, index, sessions and logs live here and must never be committed
+backend/data/
+data/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Secrets
+.env
+*.env
+
+# .NET build output and per-user files
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+*.log
+
+# OS noise
+Thumbs.db
+.DS_Store

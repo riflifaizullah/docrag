@@ -1,0 +1,32 @@
+sequenceDiagram
+    actor User
+    participant UI as Frontend (Blazor)
+    participant API as api.py
+    participant Retr as retrieval.py
+    participant Chroma as ChromaDB
+    participant Gen as generation.py
+    participant Ollama
+    participant DB as database.py (sqlite)
+
+    User->>UI: types a question
+    UI->>API: POST /ask {question, session_id}
+    API->>Retr: retrieve(question)
+    Retr->>Retr: embed question (in-process)
+    Retr->>Chroma: hybrid search (dense + RRF)
+    Chroma-->>Retr: candidate chunks
+    Retr->>Retr: rerank (cross-encoder) + boosts + dedupe
+    Retr-->>API: top-k chunks + scores
+
+    alt relevance gate fails (raw AND rerank both below threshold)
+        API-->>UI: refused, no LLM call made
+    else gate passes
+        API->>Gen: generate_answer(question, chunks)
+        Gen->>Ollama: prompt (grounded in chunks)
+        Ollama-->>Gen: raw answer text
+        Gen->>Gen: looks_like_refusal() check
+        Gen->>DB: save_message() + log answer
+        DB-->>Gen: log_id
+        Gen-->>API: answer, sources, answered/refused, log_id
+        API-->>UI: JSON response
+        UI-->>User: renders answer + source chips
+    end

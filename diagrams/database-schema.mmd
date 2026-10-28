@@ -1,0 +1,49 @@
+erDiagram
+    DOCUMENTS ||--o{ HEADINGS : "has"
+    SESSIONS ||--o{ MESSAGES : "has"
+    SESSIONS ||--o{ ANSWER_LOG : "has (nullable FK)"
+
+    DOCUMENTS {
+        text source PK
+        text content_hash
+        text indexed_at
+        text file_fingerprint
+        int page_count
+        real size_kb
+    }
+    HEADINGS {
+        int id PK
+        text source FK
+        int page
+        text text
+        int line_no
+    }
+    SESSIONS {
+        text session_id PK
+        text created_at
+    }
+    MESSAGES {
+        int id PK
+        text session_id FK
+        text role
+        text content
+        text created_at
+    }
+    ANSWER_LOG {
+        int id PK
+        text session_id FK
+        text question
+        text answer
+        real retrieval_confidence
+        int refused
+        int needs_clarification
+        int human_flag
+        text flag_category
+        int prompt_tokens
+        int response_tokens
+    }
+    VLM_CACHE {
+        text image_hash PK
+        text description
+        text created_at
+    }

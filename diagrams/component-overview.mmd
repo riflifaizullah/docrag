@@ -1,0 +1,33 @@
+flowchart TB
+    subgraph Frontends
+        Blazor["Blazor Server website<br/>(dotnet/RagSystemWeb)"]
+    end
+
+    subgraph Backend["backend/ - FastAPI (app/api.py)"]
+        API["api.py<br/>HTTP routes"]
+        Retrieval["retrieval.py<br/>embed + search + rerank + boosts"]
+        Generation["generation.py<br/>prompt + refusal detection"]
+        Database["database.py<br/>sessions, headings, flags"]
+        Ingestion["ingestion.py + sync_documents.py<br/>offline pipeline"]
+    end
+
+    Chroma[(ChromaDB<br/>vector chunks)]
+    Sqlite[(sqlite<br/>sessions/headings/log)]
+    Ollama{{"Ollama (local)<br/>LLM qwen3.5:9b<br/>VLM qwen2.5vl:7b"}}
+    Embed["In-process models<br/>embedder + cross-encoder reranker"]
+    Corpus[/"backend/data/corpus/<br/>your PDF documents"/]
+
+    Blazor -- "HTTP :8000" --> API
+    API --> Retrieval
+    API --> Generation
+    API --> Database
+    Retrieval --> Chroma
+    Retrieval --> Embed
+    Retrieval --> Database
+    Generation -- "LLM call" --> Ollama
+    Generation --> Database
+    Database --> Sqlite
+    Ingestion -- "VLM call, offline only" --> Ollama
+    Ingestion --> Chroma
+    Ingestion --> Sqlite
+    Ingestion --> Corpus

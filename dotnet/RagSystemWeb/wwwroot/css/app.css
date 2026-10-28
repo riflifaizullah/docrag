@@ -1,0 +1,157 @@
+/* Stylesheet for the web UI. The original design bound these as inline
+   CSS custom properties per palette/theme choice; Phase 1 hardcodes the
+   Nova dark palette directly on :root. Phase 5 adds the light/dark toggle
+   and the Ember/Aurora palette swap back in via the same variables. */
+
+:root {
+    --bg: #16171C;
+    --bg-elevated: #202127;
+    --sidebar-bg: #1A1B20;
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.16);
+    --text: #F1F2F5;
+    --text-muted: #9CA0AC;
+    --text-faint: #656B76;
+    --accent: #5B6EF5;
+    --accent-text: #FFFFFF;
+    --accent-soft: rgba(91,110,245,0.16);
+    --shadow-xs: 0 1px 2px rgba(0,0,0,0.35);
+    --shadow-sm: 0 6px 18px rgba(0,0,0,0.4);
+}
+
+/* Phase 5: light mode, same variables, flipped values -- every rule below
+   already reads colors from these custom properties, so no other CSS in
+   this file needs to change. Toggled via the `data-theme` attribute on
+   <html> (see _Layout.cshtml's inline init script + wwwroot/js/theme.js). */
+:root[data-theme="light"] {
+    --bg: #F5F6F8;
+    --bg-elevated: #FFFFFF;
+    --sidebar-bg: #FFFFFF;
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.14);
+    --text: #16171C;
+    --text-muted: #5B606B;
+    --text-faint: #8B909B;
+    --accent: #5B6EF5;
+    --accent-text: #FFFFFF;
+    --accent-soft: rgba(91,110,245,0.12);
+    --shadow-xs: 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-sm: 0 6px 18px rgba(0,0,0,0.10);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+    margin: 0;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+button, input { font-family: inherit; }
+::placeholder { color: var(--text-faint); opacity: 1; }
+
+.rag-root { width: 100%; height: 100vh; display: flex; overflow: hidden; position: relative; }
+.rag-brand-title { font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif; }
+
+.rag-sidebar-collapse {
+    position: absolute; top: 22px; left: 266px; width: 22px; height: 22px;
+    border-radius: 50%; border: 1px solid var(--border-strong); background: var(--bg-elevated);
+    display: flex; align-items: center; justify-content: center; z-index: 5;
+    box-shadow: var(--shadow-xs); transition: all .15s ease; cursor: pointer; color: var(--text-muted);
+}
+.rag-sidebar-collapse:hover { border-color: var(--accent); color: var(--accent); }
+.rag-sidebar-reopen {
+    position: absolute; top: 22px; left: 18px; display: flex; align-items: center; gap: 7px;
+    padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border-strong);
+    background: var(--bg-elevated); color: var(--text-muted); font-size: 12px; font-weight: 700;
+    box-shadow: var(--shadow-sm); transition: all .15s ease; z-index: 5; cursor: pointer;
+}
+.rag-sidebar-reopen:hover { border-color: var(--accent); color: var(--accent); }
+
+.rag-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.rag-scroll::-webkit-scrollbar-track { background: transparent; }
+.rag-scroll::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+.rag-tab {
+    flex: 1; text-align: center; padding: 7px 0; font-size: 12px; font-weight: 700;
+    color: var(--text-faint); border-radius: 8px; border: none; background: transparent;
+    letter-spacing: 0.01em; transition: color .15s ease, background .15s ease; cursor: pointer;
+}
+.rag-tab:hover { color: var(--text-muted); }
+.rag-tab.active { background: var(--bg-elevated); color: var(--text); box-shadow: var(--shadow-xs); }
+
+.rag-doc-row {
+    width: 100%; display: flex; align-items: center; gap: 10px; padding: 9px 11px;
+    border-radius: 9px; border: 1px solid transparent; background: transparent;
+    color: var(--text-muted); font-size: 12.5px; font-weight: 500; text-align: left;
+    transition: background .12s ease, border-color .12s ease, color .12s ease, transform .12s ease;
+    cursor: pointer;
+}
+.rag-doc-row:hover { background: var(--bg-elevated); border-color: var(--border); transform: translateX(1px); }
+.rag-doc-row.selected { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.rag-doc-row .rag-doc-icon { flex-shrink: 0; opacity: 0.7; }
+.rag-doc-row.selected .rag-doc-icon { opacity: 1; }
+
+.rag-session-row {
+    padding: 10px 12px; border-radius: 10px; cursor: pointer;
+    transition: background .12s ease; display: flex; align-items: center; gap: 9px;
+    border: none; background: transparent; width: 100%; text-align: left;
+    /* Buttons don't inherit `color` from the page by default in most browsers
+       (they fall back to the platform's own button-text color, usually
+       black) -- this was the actual cause of illegible black session-row
+       text on the dark sidebar, not a rendering glitch. */
+    color: var(--text);
+}
+.rag-session-row:hover { background: var(--bg-elevated); }
+.rag-session-row.active { background: var(--accent-soft); }
+
+.rag-icon-btn {
+    display: flex; align-items: center; justify-content: center; border-radius: 9px;
+    border: 1px solid var(--border); background: var(--bg-elevated); transition: all .15s ease;
+    cursor: pointer; color: var(--text);
+}
+.rag-icon-btn:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.rag-icon-btn:active { transform: scale(0.94); }
+
+.rag-btn-primary {
+    border: none; background: var(--accent); color: var(--accent-text); font-weight: 700;
+    transition: filter .15s ease, transform .1s ease; box-shadow: var(--shadow-sm); cursor: pointer;
+}
+.rag-btn-primary:hover { filter: brightness(1.08); }
+.rag-btn-primary:active { transform: scale(0.97); }
+
+.rag-input {
+    border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text);
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+.rag-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+.rag-composer {
+    border: 1px solid var(--border-strong); background: var(--bg-elevated);
+    box-shadow: var(--shadow-sm); transition: border-color .15s ease, box-shadow .15s ease;
+}
+.rag-composer:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.rag-composer input { background: transparent; border: none; outline: none; color: var(--text); }
+
+.rag-card { background: var(--bg-elevated); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.rag-flag-btn { border: none; background: transparent; color: var(--text-faint); transition: color .15s ease; cursor: pointer; }
+.rag-flag-btn:hover { color: var(--accent); }
+
+.rag-preview-panel {
+    width: 336px; flex-shrink: 0; height: 100%; border-left: 1px solid var(--border);
+    background: var(--sidebar-bg); transition: margin-right .22s cubic-bezier(.4,0,.2,1);
+}
+.rag-preview-reopen {
+    position: absolute; top: 18px; right: 18px; display: flex; align-items: center; gap: 7px;
+    padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border-strong);
+    background: var(--bg-elevated); color: var(--text-muted); font-size: 12px; font-weight: 700;
+    box-shadow: var(--shadow-sm); transition: all .15s ease; cursor: pointer;
+}
+.rag-preview-reopen:hover { border-color: var(--accent); color: var(--accent); }
+
+#blazor-error-ui {
+    background: lightyellow; bottom: 0; box-shadow: 0 -1px 2px rgba(0,0,0,0.2);
+    display: none; left: 0; padding: 0.6rem 1.25rem 0.7rem 1.25rem; position: fixed;
+    width: 100%; z-index: 1000;
+}
+#blazor-error-ui .dismiss { cursor: pointer; position: absolute; right: 0.75rem; top: 0.5rem; }

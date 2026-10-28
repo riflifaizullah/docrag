@@ -1,0 +1,206 @@
+@* Ported near-verbatim from the mockup's chat column (project/Main.dc.html
+   lines ~199-280), now wired to real POST /ask via ChatState. Includes the
+   sticky candidate bar (item 19/21) and per-message flagging. *@
+@inject ChatState Chat
+@implements IDisposable
+
+<div style="flex-grow: 1; height: 100%; display: flex; flex-direction: column; min-width: 0; position: relative;">
+
+    @if (SidebarCollapsed)
+    {
+        <button class="rag-sidebar-reopen" @onclick="OnExpandSidebar">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            RAG SYSTEM
+        </button>
+    }
+
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 34px; border-bottom: 1px solid var(--border); flex-shrink: 0;">
+        <div>
+            <div style="font-size: 15px; font-weight: 700;">RAG SYSTEM</div>
+            <div style="font-size: 12px; color: var(--text-faint); margin-top: 2px;">Sesi baru</div>
+        </div>
+    </div>
+
+    <div class="rag-scroll" style="flex-grow: 1; overflow-y: auto; padding: 30px 34px; display: flex; flex-direction: column; gap: 22px;">
+        @if (Chat.Messages.Count == 0)
+        {
+            <p style="font-size: 12.5px; color: var(--text-faint);">Tanyakan sesuatu tentang dokumen untuk memulai.</p>
+        }
+        @foreach (var message in Chat.Messages)
+        {
+            @if (message.IsAssistant)
+            {
+                <div style="max-width: 660px; align-self: flex-start; display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 2h9l5 5v15H6z" stroke="var(--accent-text)" stroke-width="1.9" stroke-linejoin="round"></path></svg>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 9px; min-width: 0;">
+                        <div style="font-size: 13.5px; line-height: 1.7; white-space: pre-wrap;">@((MarkupString)message.FormattedHtml)</div>
+
+                        @if (message.Sources.Count > 0)
+                        {
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                @foreach (var source in message.Sources)
+                                {
+                                    <button class="rag-doc-row" style="padding: 5px 10px; width: auto; display: inline-flex; font-size: 11.5px; color: var(--text-faint); border: 1px solid var(--border);"
+                                            @onclick="() => OnSourceClick.InvokeAsync(source)">
+                                        <svg class="rag-doc-icon" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 2h8l5 5v15H6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path></svg>
+                                        @source
+                                    </button>
+                                }
+                            </div>
+                        }
+
+                        <div style="font-size: 10.5px; color: var(--text-faint);">@message.Disclaimer</div>
+
+                        @if (message.CanFlag)
+                        {
+                            @if (message.IsFlagged)
+                            {
+                                <span style="font-size: 11.5px; color: var(--text-faint);">&#10003; Ditandai</span>
+                            }
+                            else if (_flaggingMessage == message)
+                            {
+                                <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+                                    @foreach (var (value, label) in FlagCategories)
+                                    {
+                                        <button class="rag-icon-btn" style="padding: 5px 10px; width: auto; height: auto; font-size: 11px;"
+                                                @onclick="() => SubmitFlagAsync(message, value)">@label</button>
+                                    }
+                                    <button class="rag-flag-btn" style="font-size: 11.5px;" @onclick="() => _flaggingMessage = null">Batal</button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
+                                    @if (message.FlagError is not null)
+                                    {
+                                        <span style="font-size: 11px; color: #E08585;">@message.FlagError</span>
+                                    }
+                                    <button class="rag-flag-btn" style="font-size: 11.5px; display: flex; align-items: center; gap: 4px; width: fit-content;"
+                                            @onclick="() => _flaggingMessage = message">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 3v18l7-4 7 4V3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+                                        Tandai
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div style="max-width: 600px; align-self: flex-end;">
+                    <div style="background: var(--accent); color: var(--accent-text); padding: 12px 17px; border-radius: 16px 16px 4px 16px; font-size: 13.5px; line-height: 1.55; box-shadow: var(--shadow-sm);">
+                        @message.Text
+                    </div>
+                </div>
+            }
+        }
+        @if (Chat.IsBusy)
+        {
+            <div style="max-width: 660px; align-self: flex-start; display: flex; gap: 12px; align-items: center;">
+                <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 2h9l5 5v15H6z" stroke="var(--accent-text)" stroke-width="1.9" stroke-linejoin="round"></path></svg>
+                </div>
+                <div style="font-size: 12.5px; color: var(--text-faint); font-style: italic;">Mengetik...</div>
+            </div>
+        }
+    </div>
+
+    @* Sticky candidate bar: pinned above the composer regardless of scroll
+       position, implemented as a
+       position:sticky bar, not rendered inline in the scrolled message list. *@
+    @if (Chat.ShowCandidateBar)
+    {
+        <div style="background: var(--bg-elevated); border-top: 1px solid var(--border); padding: 10px 34px; flex-shrink: 0; display: flex; align-items: flex-start; gap: 8px;">
+            @* Stacked rows, not a horizontal scroller -- filenames are long
+               and a sideways scrollbar made most of the list invisible.
+               Shows ~3 rows before scrolling vertically for the rest.
+               flex-shrink:0 on each row is load-bearing, not decoration:
+               without it, a flex-column container with more children than
+               fit in max-height SHRINKS every row to cram them all in
+               (confirmed live: 9 candidates compressed each row from its
+               natural ~31px down to ~16px, illegible) instead of leaving
+               rows at natural size and letting overflow-y:auto scroll. *@
+            <div class="rag-scroll" style="display: flex; flex-direction: column; gap: 6px; overflow-y: auto; max-height: 105px; flex-grow: 1; min-width: 0;">
+                @foreach (var candidate in Chat.CandidateDocuments)
+                {
+                    <button style="padding: 7px 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 11.5px; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; flex-shrink: 0;"
+                            title="@candidate" @onclick="() => PickCandidateAsync(candidate)">
+                        @candidate
+                    </button>
+                }
+            </div>
+            <button class="rag-icon-btn" style="width: 26px; height: 26px; flex-shrink: 0;" @onclick="() => Chat.DismissCandidates()" aria-label="Tutup">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path></svg>
+            </button>
+        </div>
+    }
+
+    <div style="padding: 16px 34px 26px; flex-shrink: 0;">
+        <div class="rag-composer" style="display: flex; align-items: center; gap: 10px; border-radius: 16px; padding: 7px 8px 7px 18px;">
+            <input placeholder="Tanyakan sesuatu tentang dokumen kontrak/SOP..." style="flex-grow: 1; font-size: 13.5px; padding: 6px 0;"
+                   value="@Chat.InputText" @oninput="OnInputChanged" @onkeydown="OnComposerKeyDown" disabled="@Chat.IsBusy" />
+            <button class="rag-btn-primary" style="width: 36px; height: 36px; border-radius: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"
+                    aria-label="Kirim" disabled="@(!Chat.CanSend)" @onclick="SendAsync">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 12h15M13 6l6 6-6 6" stroke="var(--accent-text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public bool SidebarCollapsed { get; set; }
+    [Parameter] public EventCallback OnExpandSidebar { get; set; }
+    [Parameter] public EventCallback<string> OnSourceClick { get; set; }
+
+    private static readonly (string Value, string Label)[] FlagCategories =
+    [
+        ("hallucinated_fact", "Mengada-ada"),
+        ("wrongly_refused", "Salah menolak"),
+        ("bad_retrieval", "Sumber tidak tepat"),
+        ("incomplete_or_unclear", "Tidak lengkap/jelas"),
+        ("other", "Lainnya"),
+    ];
+
+    private ChatMessageState? _flaggingMessage;
+
+    // Chat.StartNewChat()/SelectSessionAsync() can be triggered from Sidebar
+    // (a sibling component sharing this Scoped ChatState) -- Blazor doesn't
+    // re-render a sibling just because another one re-rendered, so this is
+    // needed to redraw the message list when that happens.
+    protected override void OnInitialized() => Chat.Changed += OnChatChanged;
+    private void OnChatChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => Chat.Changed -= OnChatChanged;
+
+    private void OnInputChanged(ChangeEventArgs e)
+    {
+        Chat.InputText = e.Value?.ToString() ?? "";
+    }
+
+    private async Task OnComposerKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+            await SendAsync();
+    }
+
+    private async Task SendAsync()
+    {
+        await Chat.SendAsync();
+        StateHasChanged();
+    }
+
+    private async Task PickCandidateAsync(string filename)
+    {
+        await Chat.PickCandidateAsync(filename);
+        StateHasChanged();
+    }
+
+    private async Task SubmitFlagAsync(ChatMessageState message, string category)
+    {
+        _flaggingMessage = null;
+        await Chat.FlagMessageAsync(message, category);
+        StateHasChanged();
+    }
+}

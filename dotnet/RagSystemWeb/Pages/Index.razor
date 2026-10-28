@@ -1,0 +1,52 @@
+@page "/"
+@inject ChatState Chat
+
+<div class="rag-root">
+    @if (!_sidebarCollapsed)
+    {
+        <Sidebar ActiveTab="@_activeTab"
+                 ActiveTabChanged="@((string tab) => _activeTab = tab)"
+                 OnCollapse="@(() => _sidebarCollapsed = true)"
+                 SelectedSessionId="@_selectedSessionId"
+                 SelectedSessionIdChanged="@OnSelectedSessionIdChanged"
+                 SelectedDocument="@_previewDocument"
+                 SelectedDocumentChanged="@((string filename) => _previewDocument = filename)" />
+    }
+    <ChatColumn SidebarCollapsed="@_sidebarCollapsed"
+                OnExpandSidebar="@(() => _sidebarCollapsed = false)"
+                OnSourceClick="@((string filename) => _previewDocument = filename)" />
+    @if (_previewDocument is not null)
+    {
+        <PreviewPanel Filename="@_previewDocument" OnClose="@(() => _previewDocument = null)" />
+    }
+</div>
+
+@code {
+    private bool _sidebarCollapsed;
+    private string _activeTab = "dokumen";
+    private string? _selectedSessionId;
+    private string? _previewDocument;
+
+    private async Task OnSelectedSessionIdChanged(string? sessionId)
+    {
+        // null means "Chat baru" reset ChatState directly (Sidebar.razor) --
+        // nothing to load, just clear the sidebar's highlight.
+        if (sessionId is null)
+        {
+            _selectedSessionId = null;
+        }
+        else
+        {
+            // Only commit the highlight on success (code review finding):
+            // SelectSessionAsync silently no-ops while Chat.IsBusy, and this
+            // used to update _selectedSessionId unconditionally -- clicking
+            // a session row mid-answer would highlight a row ChatColumn
+            // wasn't actually showing.
+            if (await Chat.SelectSessionAsync(sessionId))
+            {
+                _selectedSessionId = sessionId;
+            }
+        }
+        StateHasChanged();
+    }
+}

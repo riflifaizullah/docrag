@@ -1,0 +1,19 @@
+flowchart TD
+    api["api.py<br/>(FastAPI routes)"]
+    retrieval["retrieval.py"]
+    generation["generation.py"]
+    database["database.py"]
+    ingestion["ingestion.py"]
+    sync["sync_documents.py"]
+    config["config.py"]
+
+    api --> retrieval
+    api --> generation
+    api --> database
+    retrieval --> database
+    retrieval --> config
+    generation --> database
+    generation --> config
+    ingestion --> database
+    ingestion --> config
+    sync --> ingestion
