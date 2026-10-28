@@ -4,7 +4,7 @@
 
 A local-first question answering system for PDF documents. Ask a question in plain language and get an answer with the source document and page, or an honest "not found" when the documents do not contain the answer.
 
-This is a company-neutral version of a system originally built during a software engineering internship. It contains no company data, documents, names or branding. Five fictional sample documents are included so you can try it right away.
+This is a company-neutral version of a system originally built during a AI engineering internship. It contains no company data, documents, names or branding. Five fictional sample documents are included so you can try it right away.
 
 ![Architecture](diagrams/component-overview.png)
 
