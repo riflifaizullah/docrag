@@ -27,9 +27,9 @@ The first run also downloads the embedding model and the reranker (about 600 MB 
 python scripts/load_samples.py
 ```
 
-This copies the five sample PDFs from `samples/` into `backend/data/corpus/` and builds the index. The samples are fictional policy documents for an invented company: an employee handbook, and policies for leave, business travel, information security and procurement. You can rebuild them with `python scripts/generate_sample_docs.py` (needs `pip install -r requirements-dev.txt`).
+This copies the five English sample PDFs from `samples/en/` into `backend/data/corpus/` and builds the index. The samples are fictional policy documents for an invented company: an employee handbook, and policies for leave, business travel, information security and procurement. For the Indonesian set run `python scripts/load_samples.py id`. Both sets can live in one index. You can rebuild the PDFs with `python scripts/generate_sample_docs.py [en|id|all]` (needs `pip install -r requirements-dev.txt`).
 
-To use your own documents instead, put PDFs in `backend/data/corpus/` and run `cd backend && python -m app.sync_documents`.
+To use your own documents instead, put PDFs in `backend/data/corpus/` and click the re-index button in the sidebar, or run `cd backend && python -m app.sync_documents`. The button reports how many files were new, updated or removed. The corpus folder is also checked every 15 minutes.
 
 ## 3. Start the app
 
@@ -40,11 +40,32 @@ dotnet run
 
 Open http://localhost:5080. The website starts the backend for you. If it cannot find your Python, set the `DOCRAG_PYTHON` environment variable to the full path of the interpreter that has the requirements installed.
 
-To run the backend alone: `cd backend && uvicorn app.api:app --port 8000`, then open http://localhost:8000/monitor.
+To run the backend alone: `cd backend && uvicorn app.api:app --host 127.0.0.1 --port 8000`, then open http://localhost:8000/monitor.
+
+Environment variables:
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `DOCRAG_PYTHON` | `python` | Interpreter the website uses to start the backend |
+| `DOCRAG_LANG` | `en` | Language used when a question's language is unclear |
+| `DOCRAG_DATA_DIR` | `backend/data` | Where documents, the index, sessions and logs live. Use different folders to keep several indexes |
+| `DOCRAG_API_HOST` | `127.0.0.1` | Address the backend listens on. It has no sign-in, so keep it local |
+| `DOCRAG_ALLOWED_HOSTS` | `localhost,127.0.0.1` | Host names the backend accepts |
 
 ## 4. Things to try
 
-The interface and the documents are in Indonesian, so ask in Indonesian.
+The interface is in English. Answers follow the language of your question, and the English samples are loaded by default.
+
+| Ask | What to expect |
+|---|---|
+| `How many days of annual leave do permanent employees get?` | An answer from the leave policy, with its source |
+| `What is the daily allowance for domestic business travel?` | An answer from the travel policy |
+| `What does Appendix 1 say?` | A list of all five documents to choose from, because every sample has an "Appendix 1" |
+| `Is there a dress code?` | A refusal: the documents do not cover it |
+| `List all appendices in Leave_Policy_Sample.pdf` | A deterministic list of its appendices |
+| `Summarize Business_Travel_Policy_Sample.pdf` | A summary built from the whole document |
+
+With the Indonesian samples loaded (or both sets), ask in Indonesian and the answer comes back in Indonesian:
 
 | Ask | What to expect |
 |---|---|
@@ -65,8 +86,9 @@ Click a source chip under an answer to open the PDF in the side panel. Use the f
 |---|---|
 | The page loads but answers fail | Ollama is not running, or the model is not pulled. Run `ollama pull qwen3.5:9b` and check `ollama list` |
 | The first question is very slow | The models load on first use. Later questions are faster |
-| A reasonable question is refused | The relevance gate is strict, especially on a small document set. Try more specific wording, or lower `RELEVANCE_MIN_SCORE` and `RELEVANCE_MIN_RERANK_SCORE` in `backend/app/config.py` |
-| "0 documents" in the sidebar | No PDFs are indexed yet. Run the load or sync command above |
+| A reasonable question is refused | The relevance gate is strict, especially on a small document set, and retrieval depends on vocabulary ("hotel" versus "accommodation"). Try the document's own wording, or lower `RELEVANCE_MIN_SCORE` and `RELEVANCE_MIN_RERANK_SCORE` in `backend/app/config.py` |
+| "0 documents" in the sidebar | No PDFs are indexed yet. Run the load command above, or add PDFs and click the re-index button |
+| "Could not load" in the sidebar | The backend is not running. Start it, then click Retry |
 | The website cannot start the backend | Set `DOCRAG_PYTHON`, or start the backend yourself on port 8000 |
 | Scanned PDFs produce no text | Install Tesseract and Poppler so OCR can run |
 | Port 5080 or 8000 is in use | Stop the other program, or change the port in `dotnet/RagSystemWeb/Properties/launchSettings.json` |

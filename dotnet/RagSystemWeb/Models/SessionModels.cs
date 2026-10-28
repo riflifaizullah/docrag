@@ -39,11 +39,7 @@ public sealed class SessionListResponse
     public List<SessionSummary> Sessions { get; init; } = [];
 }
 
-/// <summary>One row of GET /sessions/{id}/history. The backend's `messages`
-/// table only stores role/content/created_at (database.py's get_history) --
-/// no per-message sources or answer_log id, so a reloaded historical
-/// message can't show source chips or a flag button, unlike one just
-/// asked in the current circuit. Known, accepted limitation.</summary>
+/// <summary>One row of GET /sessions/{id}/history.</summary>
 public sealed class HistoryMessage
 {
     [JsonPropertyName("role")]

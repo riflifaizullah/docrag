@@ -1,9 +1,5 @@
-"""SQLite persistence: chat/session history, headings index, document sync
-registry, and the answer-flagging log.
-
-Kept as one small module per the "share reconciliation logic" and "avoid
-duplicated storage" guidance in the rebuild spec -- everything that touches
-SQLite goes through here.
+"""SQLite persistence: chat/session history, headings index, document sync registry, and the
+answer-flagging log.
 """
 import json
 import sqlite3
@@ -14,7 +10,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterable, Optional
 
-from app import config
+from app import config, lang
 
 _local = threading.local()
 
@@ -126,10 +122,6 @@ def init_db() -> None:
             conn.execute("ALTER TABLE documents ADD COLUMN size_kb REAL")
 
 
-# ---------------------------------------------------------------------------
-# Document sync registry
-# ---------------------------------------------------------------------------
-
 def get_document_hash(source: str) -> Optional[str]:
     with get_conn() as conn:
         row = conn.execute(
@@ -139,12 +131,9 @@ def get_document_hash(source: str) -> Optional[str]:
 
 
 def get_document_fingerprint(source: str) -> Optional[str]:
-    """Cheap file-metadata fingerprint (mtime + size), checked before paying
-    for a full content_hash() read -- see sync_documents.sync_once(). At
-    thousands-of-files scale, hashing every file's full bytes on every sync
-    tick just to confirm "unchanged" is real, avoidable I/O; mtime+size
-    matching is the same fast-path trick git/rsync use before falling back
-    to a real hash."""
+    """Cheap file-metadata fingerprint (mtime + size), checked before paying for a full
+    content_hash() read -- see sync_documents.sync_once().
+    """
     with get_conn() as conn:
         row = conn.execute(
             "SELECT file_fingerprint FROM documents WHERE source = ?", (source,)
@@ -182,11 +171,7 @@ def delete_document(source: str) -> None:
 
 
 def get_document_metadata(sources: list[str]) -> dict[str, tuple[Optional[int], Optional[float]]]:
-    """Bulk (page_count, size_kb) lookup for /documents -- avoids opening
-    every PDF with pdfplumber on every request (confirmed live: doing that
-    for a thousand-plus files took 40+ seconds, past the UI's fetch timeout, which is
-    why the sidebar showed 0 documents). Missing/never-backfilled sources
-    are simply absent from the returned dict."""
+    """Bulk (page_count, size_kb) lookup for /documents."""
     if not sources:
         return {}
     with get_conn() as conn:
@@ -209,14 +194,9 @@ def set_document_metadata(source: str, page_count: int, size_kb: float) -> None:
 
 
 def get_vlm_description(image_hash: str) -> Optional[str]:
-    """The VLM's own sampling isn't fully deterministic even at
-    temperature=0 (confirmed live -- likely GPU floating-point execution
-    order, not fixable at the request level), so re-ingesting an unchanged
-    file could get a different diagram description and therefore a
-    different chunk count each time. The same rendered page image always
-    hashes the same, though -- caching by that hash makes RE-ingestion of
-    unchanged content deterministic without needing the model itself to
-    be reproducible."""
+    """Cached vision-model description for an image hash, or None. The cache keeps descriptions
+    stable across re-ingestion because the model is not fully deterministic.
+    """
     with get_conn() as conn:
         row = conn.execute(
             "SELECT description FROM vlm_cache WHERE image_hash = ?", (image_hash,)
@@ -253,10 +233,6 @@ def list_document_sources() -> list[str]:
     return sources
 
 
-# ---------------------------------------------------------------------------
-# Headings
-# ---------------------------------------------------------------------------
-
 def replace_headings(source: str, headings: Iterable[dict]) -> None:
     with get_conn() as conn:
         conn.execute("DELETE FROM headings WHERE source = ?", (source,))
@@ -267,8 +243,9 @@ def replace_headings(source: str, headings: Iterable[dict]) -> None:
 
 
 def get_headings_for_sources(sources: Iterable[str]) -> list[dict]:
-    """Heading lookups MUST be scoped to specific document(s) -- never the
-    whole corpus. See known-bug #2 (cross-document heading contamination)."""
+    """Headings for the given documents only. Lookups are always scoped to specific documents so
+    headings never leak between documents.
+    """
     sources = list(sources)
     if not sources:
         return []
@@ -294,10 +271,6 @@ def get_all_headings_grouped_by_source() -> dict[str, list[dict]]:
         grouped.setdefault(h["source"], []).append(h)
     return grouped
 
-
-# ---------------------------------------------------------------------------
-# Chat / sessions
-# ---------------------------------------------------------------------------
 
 def create_session() -> str:
     session_id = str(uuid.uuid4())
@@ -329,10 +302,9 @@ def get_history(session_id: str) -> list[dict]:
 
 
 def list_sessions() -> list[dict]:
-    """Most-recent-first, each with an auto title (its first user message,
-    truncated) and a running token total -- reads straight from the
-    sessions/messages/answer_log tables that already existed but were never
-    surfaced anywhere; no new persistence concept, just exposing it."""
+    """Most-recent-first, each with an auto title (its first user message, truncated) and a
+    running token total.
+    """
     with get_conn() as conn:
         sessions = conn.execute(
             "SELECT session_id, created_at FROM sessions ORDER BY created_at DESC"
@@ -346,7 +318,7 @@ def list_sessions() -> list[dict]:
                 (sid,),
             ).fetchone()
             title = (first_q["content"][:60] + "...") if first_q and len(first_q["content"]) > 60 else (
-                first_q["content"] if first_q else "(sesi kosong)"
+                first_q["content"] if first_q else lang.get().EMPTY_SESSION
             )
             totals = conn.execute(
                 "SELECT COALESCE(SUM(prompt_tokens), 0) AS p, COALESCE(SUM(response_tokens), 0) AS r "
@@ -366,16 +338,8 @@ def list_sessions() -> list[dict]:
         return result
 
 
-# ---------------------------------------------------------------------------
-# Answer flagging (proxy signals now, human review later)
-# ---------------------------------------------------------------------------
-
 LOW_OCR_CONFIDENCE_THRESHOLD = 60.0  # Tesseract mean word confidence is 0-100
 
-# Fixed vocabulary for human flags, not free-form text -- keeps the flagged
-# set analyzable later (group by category) instead of a pile of one-off
-# strings. Category is free-form in storage (no CHECK constraint), but every
-# writer (flag_answer's caller in app/api.py) is expected to send one of these.
 FLAG_CATEGORIES: tuple[str, ...] = (
     "hallucinated_fact",
     "wrongly_refused",
@@ -435,15 +399,7 @@ def log_answer(
 
 
 def update_answer_text(log_id: int, answer: str, session_id: Optional[str] = None) -> None:
-    """Overwrite an already-logged answer's text in place -- for the one
-    case where the text a user actually sees is finalized AFTER the row
-    was written (generation.py's competing-documents branch logs the inner,
-    single-source answer first via its own recursive log_answer() call,
-    then appends a "other documents also matched" note and candidate list
-    on top of it). Without this, the persisted answer_log row -- and
-    therefore flagging and any eval reading it -- would silently see
-    different text than what the UI actually rendered (caught in code
-    review, not live)."""
+    """Overwrite an already-logged answer's text in place."""
     with get_conn() as conn:
         conn.execute("UPDATE answer_log SET answer = ? WHERE id = ?", (answer, log_id))
     if session_id:
@@ -451,14 +407,9 @@ def update_answer_text(log_id: int, answer: str, session_id: Optional[str] = Non
 
 
 def _write_session_log_file(session_id: str) -> None:
-    """Human-readable per-session Markdown log under data/session_logs/,
-    rewritten in full from answer_log on every turn -- SQLite stays the one
-    source of truth (matches list_sessions()'s token totals exactly), the
-    file is just a always-current, easy-to-open view of it. One block per
-    answer_log row (i.e. per sub-question when a turn got split into
-    several), since that's the granularity token counts actually exist at;
-    a multi-question turn showing up as separate Q&A blocks is a feature,
-    not a loss of information."""
+    """Human-readable per-session Markdown log under data/session_logs/, rewritten in full from
+    answer_log on every turn.
+    """
     with get_conn() as conn:
         session = conn.execute(
             "SELECT created_at FROM sessions WHERE session_id = ?", (session_id,)
@@ -471,15 +422,16 @@ def _write_session_log_file(session_id: str) -> None:
 
     total_prompt = sum(r["prompt_tokens"] or 0 for r in rows)
     total_response = sum(r["response_tokens"] or 0 for r in rows)
+    L = lang.get()
     lines = [
-        f"# Sesi {session_id}",
-        f"Dibuat: {session['created_at'] if session else 'tidak diketahui'}",
-        f"Total token: {total_prompt + total_response} (prompt: {total_prompt}, response: {total_response})",
+        L.LOG_TITLE.format(session_id=session_id),
+        L.LOG_CREATED.format(created=session["created_at"] if session else L.LOG_UNKNOWN),
+        L.LOG_TOTAL.format(total=total_prompt + total_response, prompt=total_prompt, response=total_response),
         "",
     ]
     for r in rows:
         turn_tokens = (r["prompt_tokens"] or 0) + (r["response_tokens"] or 0)
-        lines.append(f"## {r['created_at']} -- {turn_tokens} token")
+        lines.append(L.LOG_TURN.format(created=r["created_at"], tokens=turn_tokens))
         lines.append(f"**Q:** {r['question']}")
         lines.append("")
         lines.append(f"**A:** {r['answer']}")
@@ -505,10 +457,6 @@ def export_flagged_answers() -> list[dict]:
         ).fetchall()
         return [dict(r) for r in rows]
 
-
-# ---------------------------------------------------------------------------
-# Short-TTL cache helper (used by retrieval.list_indexed_sources)
-# ---------------------------------------------------------------------------
 
 class TTLCache:
     def __init__(self, ttl_seconds: float):

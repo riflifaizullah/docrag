@@ -4,13 +4,7 @@ using RagSystemWeb.Models;
 
 namespace RagSystemWeb.Services;
 
-/// <summary>
-/// Thin HTTP client for the FastAPI backend. Registered as a singleton in
-/// Program.cs -- one shared HttpClient for the app's life, never
-/// `new HttpClient()` per call. Ported unchanged from the WPF attempt
-/// (dotnet/RagSystemDesktop/Services/ApiClient.cs) -- this logic doesn't
-/// care whether the UI is WPF or Blazor.
-/// </summary>
+/// <summary>Thin HTTP client for the FastAPI backend.</summary>
 public sealed class ApiClient : IApiClient
 {
     // Shared with PreviewPanel.razor so the <iframe>/download link don't
@@ -24,9 +18,6 @@ public sealed class ApiClient : IApiClient
         _http = new HttpClient
         {
             BaseAddress = new Uri(BackendBaseUrl),
-            // Full-document-fallback answers can legitimately take minutes
-            // (OLLAMA_FULL_DOC_TIMEOUT_SECONDS = 420 in the backend config) -- a
-            // short client timeout would cut those off mid-answer.
             Timeout = TimeSpan.FromSeconds(450),
         };
     }
@@ -42,6 +33,22 @@ public sealed class ApiClient : IApiClient
         {
             return false;
         }
+    }
+
+    public async Task<UiStringsResponse> GetUiStringsAsync(CancellationToken ct = default)
+    {
+        var response = await _http.GetAsync("/ui", ct);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<UiStringsResponse>(cancellationToken: ct)
+            ?? throw new HttpRequestException("GET /ui returned an empty body");
+    }
+
+    public async Task<SyncResult> SyncDocumentsAsync(CancellationToken ct = default)
+    {
+        var response = await _http.PostAsync("/sync", content: null, ct);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<SyncResult>(cancellationToken: ct)
+            ?? throw new HttpRequestException("POST /sync returned an empty body");
     }
 
     public async Task<string> CreateSessionAsync(CancellationToken ct = default)
@@ -91,11 +98,6 @@ public sealed class ApiClient : IApiClient
 
     public async Task FlagAsync(int logId, string category, string? correctedAnswer = null, CancellationToken ct = default)
     {
-        // backend/app/api.py's flag() takes category/corrected_answer as plain
-        // FastAPI query params, NOT a JSON body -- PostAsJsonAsync would send
-        // a body the endpoint never reads and fail. Build the query string
-        // explicitly instead. This exact mistake was flagged as a risk in
-        // the plan file for both the WPF and the Blazor attempts.
         var queryParams = new Dictionary<string, string?> { ["category"] = category };
         if (correctedAnswer is not null)
             queryParams["corrected_answer"] = correctedAnswer;

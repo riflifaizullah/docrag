@@ -1,9 +1,5 @@
-"""Generate the fictional sample PDFs in samples/.
-
-Everything here is invented for demonstration: the company, the policies and
-the numbers. Run `python scripts/generate_sample_docs.py` (needs reportlab,
-see requirements-dev.txt) to rebuild the PDFs.
-"""
+"""Generate the fictional sample PDFs. Usage: python scripts/generate_sample_docs.py [en|id|all]"""
+import sys
 from pathlib import Path
 
 from reportlab.lib.pagesizes import A4
@@ -12,9 +8,12 @@ from reportlab.lib.units import cm
 from reportlab.pdfgen import canvas
 from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import sample_content_en as en  # noqa: E402
+
 OUT = Path(__file__).resolve().parent.parent / "samples"
 
-NOTICE = (
+NOTICE_ID = (
     "Dokumen ini adalah contoh fiktif untuk demonstrasi DocRAG. Perusahaan, "
     "kebijakan, dan angka di dalamnya tidak nyata."
 )
@@ -28,7 +27,9 @@ SMALL = ParagraphStyle("small", fontName="Helvetica-Oblique", fontSize=9, leadin
 
 
 class NumberedCanvas(canvas.Canvas):
-    """Adds a 'Halaman X dari Y' footer, like real policy documents have."""
+    """Adds a 'Page X of Y' footer, like real policy documents have."""
+
+    footer = "Halaman {page} dari {total}"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -43,14 +44,14 @@ class NumberedCanvas(canvas.Canvas):
         for state in self._saved:
             self.__dict__.update(state)
             self.setFont("Helvetica", 9)
-            self.drawRightString(A4[0] - 2 * cm, 1.2 * cm, f"Halaman {self._pageNumber} dari {total}")
+            self.drawRightString(A4[0] - 2 * cm, 1.2 * cm, self.footer.format(page=self._pageNumber, total=total))
             super().showPage()
         super().save()
 
 
 # Each document: (file name, title, number, [("BAB ..." or None, [(heading, [paragraphs])])])
 # A heading starting with "Lampiran" begins on a new page.
-DOCS = [
+DOCS_ID = [
     (
         "Panduan_Karyawan_Contoh.pdf",
         "Panduan Karyawan",
@@ -163,30 +164,40 @@ DOCS = [
 ]
 
 
-def build(file_name, title, number, groups):
-    story = [Paragraph(title, TITLE), Paragraph(f"PT Contoh Nusantara | {number}", SUBTITLE)]
-    first_lampiran = True
+LANGUAGES = {
+    "id": {"docs": DOCS_ID, "notice": NOTICE_ID, "company": "PT Contoh Nusantara", "footer": "Halaman {page} dari {total}", "appendix": "Lampiran"},
+    "en": {"docs": en.DOCS, "notice": en.NOTICE, "company": en.COMPANY, "footer": en.FOOTER, "appendix": "Appendix"},
+}
+
+
+def build(out_dir, lang, file_name, title, number, groups):
+    cfg = LANGUAGES[lang]
+    canvas_cls = type("Canvas", (NumberedCanvas,), {"footer": cfg["footer"]})
+    story = [Paragraph(title, TITLE), Paragraph(f"{cfg['company']} | {number}", SUBTITLE)]
     for bab, entries in groups:
         if bab:
             story.append(Paragraph(bab, BAB))
         for heading, paragraphs in entries:
-            if heading.startswith("Lampiran"):
+            is_appendix = heading.startswith(cfg["appendix"])
+            if is_appendix:
                 story.append(PageBreak())
-                first_lampiran = False
-            story.append(Paragraph(heading, PASAL if not heading.startswith("Lampiran") else BAB))
+            story.append(Paragraph(heading, BAB if is_appendix else PASAL))
             for text in paragraphs:
                 story.append(Paragraph(text, BODY))
     story.append(Spacer(1, 12))
-    story.append(Paragraph(NOTICE, SMALL))
+    story.append(Paragraph(cfg["notice"], SMALL))
     doc = SimpleDocTemplate(
-        str(OUT / file_name), pagesize=A4, title=title, author="DocRAG samples",
+        str(out_dir / file_name), pagesize=A4, title=title, author="DocRAG samples",
         leftMargin=2.2 * cm, rightMargin=2.2 * cm, topMargin=2.2 * cm, bottomMargin=2.2 * cm,
     )
-    doc.build(story, canvasmaker=NumberedCanvas)
+    doc.build(story, canvasmaker=canvas_cls)
 
 
 if __name__ == "__main__":
-    OUT.mkdir(exist_ok=True)
-    for spec in DOCS:
-        build(*spec)
-        print("wrote", OUT / spec[0])
+    choice = sys.argv[1] if len(sys.argv) > 1 else "all"
+    for lang in (LANGUAGES if choice == "all" else [choice]):
+        out_dir = OUT / lang
+        out_dir.mkdir(parents=True, exist_ok=True)
+        for spec in LANGUAGES[lang]["docs"]:
+            build(out_dir, lang, *spec)
+            print("wrote", out_dir / spec[0])

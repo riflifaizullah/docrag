@@ -2,13 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace RagSystemWeb.Models;
 
-/// <summary>
-/// Field names match backend/app/api.py's Pydantic models exactly (plain
-/// snake_case, no camelCase aliasing anywhere in the backend) -- confirmed
-/// by reading api.py directly, not guessed. Ported unchanged from the WPF
-/// attempt (dotnet/RagSystemDesktop/Models/AskModels.cs) -- these are
-/// framework-agnostic POCOs.
-/// </summary>
+/// <summary>Field names match backend/app/api.py's Pydantic models exactly (plain snake_case, no camelCase aliasing anywhere in the backend).</summary>
 public sealed class AskRequest
 {
     [JsonPropertyName("question")]

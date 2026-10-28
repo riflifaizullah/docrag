@@ -45,7 +45,7 @@ In a test on a private document set, most wrong-page results never reached the r
 
 ![Ingestion](../diagrams/ingestion-pipeline.png)
 
-Ingestion runs offline (`python -m app.sync_documents`). It reads each page's text layer and falls back to OCR when a page has no usable text. It detects headings (lines such as "Bab", "Pasal" and "Lampiran", and numbered sections), splits the text along those headings while keeping page numbers, embeds the chunks, and writes them to ChromaDB and SQLite. Files are tracked by content hash, so a sync only reprocesses new or changed files and removes deleted ones.
+Ingestion runs offline (`python -m app.sync_documents`). It reads each page's text layer and falls back to OCR when a page has no usable text. It detects headings (lines such as "Chapter", "Article" and "Appendix" or "Bab", "Pasal" and "Lampiran", plus numbered sections, with the patterns of every language always active), splits the text along those headings while keeping page numbers, embeds the chunks, and writes them to ChromaDB and SQLite. Files are tracked by content hash, so a sync only reprocesses new or changed files and removes deleted ones.
 
 ## 6. Data model
 
@@ -65,6 +65,7 @@ SQLite holds the metadata: documents, detected headings, chat sessions and messa
 | `database.py` | SQLite access: sessions, headings, answer log, flags |
 | `ingestion.py` | PDF parsing, OCR fallback, heading detection, chunking |
 | `sync_documents.py` | Detects new, changed and deleted files and keeps the index in step |
+| `lang/` | One module per language (`en.py`, `id.py`) with prompts, messages, refusal phrases, heading patterns and question words, plus `ui.py` for the website text. `lang.detect()` picks the language of a question |
 | `config.py` | All tunable values in one place |
 
 ## 8. Settings worth knowing
@@ -80,10 +81,35 @@ All in `backend/app/config.py`.
 | `RERANK_CANDIDATE_K`, `BM25_CANDIDATE_K` | 100 | Candidates considered before reranking |
 | `RELEVANCE_MIN_SCORE`, `RELEVANCE_MIN_RERANK_SCORE` | 0.62, 0.0 | Relevance gate thresholds |
 | `OLLAMA_CONTEXT_TOKENS` | 16384 | Context size used for prompts |
+| `LANGUAGE` (`DOCRAG_LANG`) | `en` | Language used when a question's language is unclear |
+| `DATA_DIR` (`DOCRAG_DATA_DIR`) | `backend/data` | Corpus, index, sessions and logs |
+| `API_HOST` (`DOCRAG_API_HOST`) | `127.0.0.1` | Address the backend listens on |
 
 ## 9. Trade-offs and known limits
 
 - **The gate was tuned on a different, larger document set.** On a very small set of documents, a vague question can be refused even though the right document ranks first. Lowering the two gate thresholds makes it more willing to answer, at the cost of more wrong answers to unrelated questions.
-- **Heuristics lean towards Indonesian.** Heading patterns, the answer prompt and the interface text are in Indonesian.
+- **Two languages only.** Heading patterns, question splitting, refusal phrases and prompts exist for English and Indonesian. The answer language is guessed from common words, and an unclear question uses the default language.
+- **Vocabulary matters.** Retrieval scores a question against passages, and the reranker treats "hotel" and "accommodation" as unrelated. A question in the document's own words passes the gate more reliably.
 - **Local model means local hardware.** A full answer takes seconds to about half a minute on a laptop GPU.
 - **No accuracy numbers are published.** The evaluation harness used during development ran on private documents and is not part of this repository.
+
+## 10. Security
+
+The system is meant for one user on one machine.
+
+| Area | What is in place |
+|---|---|
+| Network exposure | The backend listens on `127.0.0.1` and rejects other `Host` headers, which blocks DNS rebinding. It has no sign-in, so it must not be exposed |
+| File access | A file is served only if it is an indexed source, so path traversal returns 404. There is no upload endpoint |
+| Input | A question is limited to 4000 characters. Database access uses parameterised queries |
+| Output | Answers are HTML-encoded before display and model output is never executed. Internal error text is logged, not shown in answers |
+| Website | `X-Content-Type-Options`, `X-Frame-Options` and `Referrer-Policy` headers are set |
+| Prompt injection | Document text reaches the model, so a document can try to steer an answer. Index only documents you trust |
+
+Dependencies are pinned. `pip-audit` and `dotnet list package --vulnerable` were run before release. Advisories were still reported for `chromadb` 0.5.5 (server features, while this project uses the embedded client), `sentence-transformers`, `transformers` and `starlette` 1.x-era fixes. Moving them means a newer ChromaDB and a new Pydantic, which changes the stored index, so they are held back on purpose and listed here instead.
+
+## 11. Connecting your own documents
+
+The only input is the corpus folder (`DATA_DIR/corpus`, `backend/data/corpus` by default). `sync_documents.sync_once()` lists the PDFs there, hashes each file, and indexes only what is new or changed. It is reached three ways: the sidebar button, `POST /sync`, and a scheduler that runs every 15 minutes.
+
+To feed it from another system, put the files in that folder (a scheduled export or copy is enough) and call `POST /sync`. A custom connector would replace the file listing in `sync_documents.py`. Nothing downstream needs to change, because every later step reads from the index.

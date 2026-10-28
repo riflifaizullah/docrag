@@ -1,7 +1,3 @@
-// Drag-to-resize for PreviewPanel.razor's left edge. Runs entirely in JS
-// (no SignalR round-trip per mousemove -- that would be far too slow over
-// a Blazor Server circuit) and only persists the final width to
-// localStorage once the drag ends.
 window.ragResize = {
     init: function (handle, panel, storageKey, min, max) {
         if (!handle || !panel) return;
@@ -15,9 +11,6 @@ window.ragResize = {
 
         function onMove(e) {
             if (!dragging) return;
-            // The handle sits on the LEFT edge of the panel -- dragging left
-            // (negative clientX delta) should grow the panel, so the sign
-            // is inverted relative to a right-edge handle.
             var delta = startX - e.clientX;
             var width = Math.min(max, Math.max(min, startWidth + delta));
             panel.style.width = width + 'px';

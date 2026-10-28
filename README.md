@@ -2,9 +2,35 @@
 
 [![CI](https://github.com/riflifaizullah/docrag/actions/workflows/ci.yml/badge.svg)](https://github.com/riflifaizullah/docrag/actions/workflows/ci.yml)
 
+## Demo
+
+<!-- DEMO VIDEO: drag the MP4 file into this spot in the GitHub web editor to embed it. -->
+Demo video: coming soon.
+
+The screenshots below use the five fictional English sample documents. The interface is in English, and answers follow the language of the question, so you can ask in Indonesian too.
+
+**Answer with sources**
+
+![Answer with sources](docs/images/answer-with-sources.png)
+
+**A refusal when the documents do not cover the question**
+
+![Refusal](docs/images/refusal.png)
+
+**The document-choice prompt for an ambiguous question**
+
+![Document choice](docs/images/document-choice.png)
+
 A local-first question answering system for PDF documents. Ask a question in plain language and get an answer with the source document and page, or an honest "not found" when the documents do not contain the answer.
 
-This is a company-neutral version of a system originally built during a AI engineering internship. It contains no company data, documents, names or branding. Five fictional sample documents are included so you can try it right away.
+Developed from a system I built during an AI engineering internship and rebuilt as a company-neutral, open-source version. It contains no company data, documents, names or branding, and it includes fictional sample documents in English and Indonesian so you can try it right away.
+
+## At a glance
+
+- **Grounded answers with page citations.** Each answer names its source documents and pages.
+- **Refuses instead of guessing.** If nothing relevant is retrieved, you get a clear "not found".
+- **Hybrid retrieval with reranking.** Vector and keyword search are merged, then a cross-encoder reranks the candidates.
+- **Runs fully local.** The language model, embeddings and reranker all run on your own machine.
 
 ![Architecture](diagrams/component-overview.png)
 
@@ -14,14 +40,25 @@ This is a company-neutral version of a system originally built during a AI engin
 - **Refuses instead of guessing.** If no retrieved passage is relevant enough, the system says so without calling the language model.
 - **Asks which document you mean.** A question like "what does Appendix 1 say?" that matches several documents returns a list to choose from, not a guess.
 - **Flags unverified section numbers.** If an answer cites a section or appendix number that does not exist in the source document's headings, a note is added.
+- **Answers in your language.** Ask in English or Indonesian and the answer, the refusals and the prompts follow.
 - **Runs locally.** The language model runs through [Ollama](https://ollama.com), so document text never leaves the machine.
+- **Keeps the index current.** A button in the sidebar re-indexes the documents folder and reports what was added, updated or removed.
+
+## Languages
+
+- **Interface:** English.
+- **Answers:** written in the language of the question. The prompt, the answer and the system messages (refusals, "which document do you mean?") all follow it, and a question in one language about a document in the other works too.
+- **Documents:** heading patterns for both languages are always active (Article, Section, Appendix, Chapter and Pasal, Lampiran, Bab, Ayat), so English and Indonesian documents can share one index.
+- **Samples:** `samples/en` and `samples/id`, five documents each.
+- **`DOCRAG_LANG`** (`en` by default) is the language used when a question's language is unclear.
+- **Another language** needs one module in `backend/app/lang/` and an entry in its `SUPPORTED` list.
 
 ## Try it in four steps
 
 ```bash
 pip install -r backend/requirements.txt          # 1. backend dependencies
 ollama pull qwen3.5:9b                           # 2. local language model
-python scripts/load_samples.py                   # 3. load the sample documents and build the index
+python scripts/load_samples.py                   # 3. load the English samples and build the index (use id for Indonesian)
 cd dotnet/RagSystemWeb && dotnet run             # 4. start the website, then open http://localhost:5080
 ```
 
@@ -32,6 +69,34 @@ You need Python 3.10+, the .NET 8 SDK and Ollama, and a GPU with about 8 GB of m
 ![Decision flow](diagrams/answer-decision-flow.png)
 
 A question ends in one of four ways: an answer, a refusal, a request to choose a document, or a deterministic list.
+
+## How documents are indexed
+
+Indexing runs when you sync, not on every question.
+
+1. **Read.** Each PDF's text is extracted page by page. Scanned pages fall back to OCR, and pages that are mostly diagrams can be described by a vision model.
+2. **Find the structure.** Headings such as Article, Appendix and Chapter (or Pasal, Lampiran and Bab) are detected, so a passage never cuts a clause in half.
+3. **Chunk.** The text is split along those headings into passages of about 1000 characters, each keeping its document and page number.
+4. **Store.** Each passage becomes a vector in ChromaDB. Headings and file details go into SQLite, and a keyword index is built alongside.
+
+### Keeping the index current
+
+Documents are read from one folder, `backend/data/corpus/`. Click the re-index button in the sidebar (or call `POST /sync`) and DocRAG compares each file's content hash:
+
+- **New** files are indexed.
+- **Changed** files are re-chunked.
+- **Deleted** files are removed.
+
+The button then reports the counts. The folder is also checked automatically every 15 minutes, and unchanged files are skipped, so a sync is fast.
+
+### Using it with your own documents
+
+DocRAG reads PDFs from a folder. It has no built-in connector to a database or document system, so connecting your own source means getting the files into that folder.
+
+- **Simplest:** export or copy your documents into the corpus folder on a schedule, then call `POST /sync`.
+- **Deeper:** `backend/app/sync_documents.py` is the one place that lists and reads files, which makes it the natural place for a custom connector.
+- **Settings:** chunk size, the relevance thresholds and the models are in `backend/app/config.py`.
+- **Before you share it:** the backend has no sign-in and listens on localhost only, so a shared deployment needs authentication and access rules in front of it.
 
 ## How retrieval works
 
@@ -86,6 +151,26 @@ The website talks to the backend through an `IApiClient` interface, so its chat 
 
 - The model and reranker need a reasonably capable machine, and a full answer takes a few seconds to about half a minute locally.
 - The relevance gate was tuned on a larger document set. On a very small set such as the bundled samples, a vaguely worded question can be refused even when the right document ranks first. The thresholds are in `backend/app/config.py`.
-- The heuristics are tuned for Indonesian documents, and the interface text and answer prompt are in Indonesian.
+- Heading patterns, question splitting and refusal phrases cover English and Indonesian only. The answer language is guessed from common words, so a very short or mixed-language question falls back to `DOCRAG_LANG`.
+- Retrieval depends on vocabulary. A question that says "hotel" can miss a passage that only says "accommodation", because the reranker scores the two words as unrelated.
 - No public evaluation results are included. The evaluation harness used during development ran on a private document set and is not part of this repository, so this README reports no accuracy numbers.
 - It is not deployed publicly.
+
+## Security notes
+
+DocRAG is built to run on one machine for one user.
+
+- The backend listens on `127.0.0.1` only and has no sign-in. Do not expose port 8000. Set `DOCRAG_API_HOST` only if you put authentication in front of it.
+- A request whose `Host` header is not `localhost` or `127.0.0.1` is rejected, which blocks DNS rebinding from a web page. `DOCRAG_ALLOWED_HOSTS` changes the list.
+- Files are served only if they are indexed documents, so a path such as `../config.py` returns 404. A question is limited to 4000 characters.
+- Answers are HTML-encoded before they are shown, and model output is never executed.
+- Document text is passed to the model, so a document can try to steer an answer (prompt injection). Index only documents you trust.
+- Dependencies are pinned and checked with `pip-audit` and `dotnet list package --vulnerable`. A few advisories remain in packages that cannot move without changing the stored index or the Pydantic version (`chromadb`, `sentence-transformers`, `transformers`, `starlette`). The details are in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## Need help?
+
+DocRAG is free to use and change under the MIT license. If you want help connecting it to your own documents, tuning it, or running it inside your network, you can reach me on [LinkedIn](https://www.linkedin.com/in/riflifaizullah). Bugs and questions are welcome as [GitHub issues](https://github.com/riflifaizullah/docrag/issues).
+
+## License
+
+MIT. See [LICENSE](LICENSE).

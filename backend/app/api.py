@@ -4,25 +4,34 @@ from __future__ import annotations
 
 import base64
 import io
+import os
 import time
 from typing import Optional
 
 import pdfplumber
 import requests
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel, Field
 
-from app import config, database, generation, retrieval, sync_documents
+from app import config, database, generation, lang, retrieval, sync_documents
+from app.lang import ui
 
 app = FastAPI(title="DocRAG API")
+
+# Only requests addressed to this machine are served, which blocks DNS rebinding from a web page.
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=os.getenv("DOCRAG_ALLOWED_HOSTS", "localhost,127.0.0.1").split(","),
+)
 
 PREVIEW_TEXT_CHARS = 800
 THUMBNAIL_DPI = 100
 
 
 class AskRequest(BaseModel):
-    question: str
+    question: str = Field(min_length=1, max_length=4000)
     session_id: Optional[str] = None
 
 
@@ -61,6 +70,11 @@ def on_shutdown():
     sync_documents.stop_scheduler()
 
 
+@app.get("/ui")
+def ui_strings():
+    return {"language": "en", "strings": ui.STRINGS}
+
+
 @app.get("/health")
 def health():
     return {"status": "ok", "model": config.OLLAMA_MODEL}
@@ -76,12 +90,6 @@ def ask(req: AskRequest):
     )
     results = [QuestionAnswer(**r) for r in sub_results]
 
-    # Store exactly what the live UI actually shows (see streamlit_app.py's
-    # submit_question(), which joins just r["answer"] with no "Q:/A:"
-    # prefix) -- confirmed live this drifted apart: a reloaded session
-    # showed a redundant "Q: ... A: ..." prefix on every turn that was
-    # never present when the answer was first rendered, because this line
-    # baked in formatting the live path never had.
     combined_answer = "\n\n".join(r.answer for r in results)
     database.save_message(session_id, "assistant", combined_answer)
 
@@ -118,19 +126,7 @@ def _validated_path(filename: str):
 @app.get("/documents")
 def documents():
     sources = retrieval.list_indexed_sources()
-    # One batched Chroma query for every document's type label, routed
-    # through the single Chroma-access thread -- confirmed live the old
-    # per-document retrieval.get_document_type_label() call, once per
-    # document (over a thousand in a large corpus) and NOT thread-routed, made this
-    # endpoint take minutes and could hang the whole server under
-    # concurrent load. See get_document_type_labels()'s own docstring.
     labels = retrieval.run_on_chroma_thread(retrieval.get_document_type_labels, sources)
-    # page_count/size_kb are cached in sqlite at ingest time (see
-    # ingestion.write_ingest_data) -- confirmed live that opening every PDF
-    # with pdfplumber on every request (the old behavior) took 40+ seconds
-    # for a thousand-plus files, past the UI's fetch timeout, which is why the sidebar
-    # showed 0 documents. Sources ingested before this cache existed fall
-    # back to opening just that one file and backfill the cache for next time.
     cached_meta = database.get_document_metadata(sources)
     results = []
     for source in sources:
@@ -147,7 +143,7 @@ def documents():
         results.append(
             {
                 "filename": source,
-                "type": labels.get(source, "Tidak diketahui"),
+                "type": labels.get(source, lang.get().UNKNOWN_TYPE),
                 "page_count": page_count,
                 "size_kb": size_kb,
             }
@@ -174,7 +170,7 @@ def document_preview(filename: str):
             images[0].save(buf, format="PNG")
             thumbnail_b64 = base64.b64encode(buf.getvalue()).decode("ascii")
     except Exception:
-        # poppler may not be installed on this laptop; degrade gracefully
+        # Poppler may not be installed; degrade gracefully
         thumbnail_b64 = None
 
     return {
@@ -261,14 +257,6 @@ def sessions():
 def session_history(session_id: str):
     return {"messages": database.get_history(session_id)}
 
-
-# ---------------------------------------------------------------------------
-# Status monitoring: a small self-contained page, no separate frontend stack.
-# The check runs server-side (this process calling Ollama directly) so the
-# page's own JavaScript only ever talks to this same FastAPI app -- Ollama
-# doesn't send CORS headers, so a browser fetching it directly from a page
-# served elsewhere would get silently blocked.
-# ---------------------------------------------------------------------------
 
 def _check_ollama() -> dict:
     start = time.perf_counter()

@@ -2,33 +2,11 @@ using System.Diagnostics;
 
 namespace RagSystemWeb.Services;
 
-/// <summary>
-/// Ported from dotnet/RagSystemDesktop/Services/BackendLauncher.cs (the WPF
-/// attempt) with the splash-window coupling dropped: Program.cs awaits
-/// EnsureRunningAsync() before app.Run(), so no HTTP request is served
-/// until the backend is confirmed up -- there's nothing else to notify.
-/// Status goes to the console instead of a StatusChanged event.
-///
-/// Confirmed live during Phase 0 verification: under `dotnet run` (not a
-/// published exe), the spawned uvicorn process is bound to the same Job
-/// Object as the `dotnet run` process tree, so killing the running app
-/// (or its inner apphost) also kills the backend -- unlike Streamlit's
-/// plain subprocess.Popen, which truly outlives its parent. This only
-/// showed up when killing the *inner* apphost process specifically; the
-/// outer `dotnet run` CLI muxer process survives independently. Not
-/// fixed here (would need CREATE_BREAKAWAY_FROM_JOB on the spawned
-/// process) -- just means the dev inner-loop respawns the backend on
-/// every `dotnet run` restart, which is slower but not broken.
-/// </summary>
+/// <summary>Ported from dotnet/RagSystemDesktop/Services/BackendLauncher.cs (the WPF attempt) with the splash-window coupling dropped: Program.cs.</summary>
 public static class BackendLauncher
 {
     private const string ApiBase = "http://localhost:8000";
 
-    // Same depth as the WPF project: dotnet/RagSystemWeb/bin/Debug/net8.0/
-    // is the same number of levels below the repo root as
-    // dotnet/RagSystemDesktop/bin/Debug/net8.0-windows/ was (the TFM folder
-    // name differs, the depth doesn't). Still a Phase-0-only assumption --
-    // breaks under `dotnet publish`, not fixed here, same as the WPF version.
     private static readonly string BackendDir = Path.GetFullPath(
         Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "backend"));
     private static readonly string LockPath = Path.Combine(BackendDir, "data", ".api_starting.lock");
@@ -51,7 +29,7 @@ public static class BackendLauncher
             return true;
         }
 
-        Console.WriteLine("[BackendLauncher] Menyalakan backend API (bisa 30-60 detik pada startup pertama)...");
+        Console.WriteLine("[BackendLauncher] Starting the backend API (can take 30-60 seconds on first start)...");
 
         if (TryAcquireLock())
         {
@@ -78,15 +56,11 @@ public static class BackendLauncher
             await Task.Delay(2000, ct);
         }
 
-        Console.WriteLine("[BackendLauncher] Backend tidak merespons setelah 120 detik. Periksa log atau jalankan manual.");
+        Console.WriteLine("[BackendLauncher] Backend did not respond after 120 seconds. Check the log or start it manually.");
         return false;
     }
 
-    /// <summary>
-    /// Atomic exclusive-create (not read-then-write) -- a real TOCTOU race
-    /// was found and fixed at this exact spot in the WPF version's code
-    /// review; ported with the fix already applied, not reintroduced.
-    /// </summary>
+    /// <summary>Atomic exclusive-create (not read-then-write) -- a real TOCTOU race was found and fixed at this exact spot in the WPF version's code.</summary>
     private static bool TryAcquireLock()
     {
         Directory.CreateDirectory(Path.GetDirectoryName(LockPath)!);
@@ -140,7 +114,8 @@ public static class BackendLauncher
         psi.ArgumentList.Add("uvicorn");
         psi.ArgumentList.Add("app.api:app");
         psi.ArgumentList.Add("--host");
-        psi.ArgumentList.Add("0.0.0.0");
+        // The API has no sign-in, so it listens on this machine only. Set DOCRAG_API_HOST to change that on purpose.
+        psi.ArgumentList.Add(Environment.GetEnvironmentVariable("DOCRAG_API_HOST") ?? "127.0.0.1");
         psi.ArgumentList.Add("--port");
         psi.ArgumentList.Add("8000");
 

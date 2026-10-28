@@ -37,11 +37,6 @@
         }
         else
         {
-            // Only commit the highlight on success (code review finding):
-            // SelectSessionAsync silently no-ops while Chat.IsBusy, and this
-            // used to update _selectedSessionId unconditionally -- clicking
-            // a session row mid-answer would highlight a row ChatColumn
-            // wasn't actually showing.
             if (await Chat.SelectSessionAsync(sessionId))
             {
                 _selectedSessionId = sessionId;

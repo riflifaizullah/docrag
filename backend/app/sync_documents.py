@@ -1,7 +1,4 @@
-"""Core document reconciliation (new/updated/unchanged/deleted via content
-hashing). Shared by the scheduled job, the /sync endpoint, the UI button,
-and direct manual runs (`python -m app.sync_documents`) -- one
-implementation, four trigger paths."""
+"""Core document reconciliation (new/updated/unchanged/deleted via content hashing)."""
 from __future__ import annotations
 
 import json
@@ -16,11 +13,7 @@ _scheduler: BackgroundScheduler | None = None
 
 
 def sync_once(corpus_dir: Path = config.CORPUS_DIR, verbose: bool = False) -> dict:
-    """verbose=True prints per-file progress as it happens -- off by default
-    so the scheduled background job and the /sync API endpoint (which call
-    this every run) don't spam server logs; the manual `python -m
-    app.sync_documents` CLI entrypoint below turns it on, since that's the
-    one place a human is actually watching the terminal live."""
+    """verbose=True prints per-file progress as it happens."""
     collection = retrieval.get_collection()
     embedder = retrieval.get_embedder()
 
@@ -37,11 +30,6 @@ def sync_once(corpus_dir: Path = config.CORPUS_DIR, verbose: bool = False) -> di
             new_files.append(name)
             continue
 
-        # Cheap mtime+size check first -- at thousands-of-files scale,
-        # reading every file's full bytes to hash it on every sync tick
-        # just to confirm "unchanged" is real, avoidable I/O. A missing
-        # fingerprint (a file recorded before this existed) always falls
-        # through to a real hash rather than being trusted blindly.
         existing_fp = database.get_document_fingerprint(name)
         current_fp = ingestion.file_fingerprint(path)
         if existing_fp is not None and existing_fp == current_fp:
@@ -63,13 +51,6 @@ def sync_once(corpus_dir: Path = config.CORPUS_DIR, verbose: bool = False) -> di
             flush=True,
         )
 
-    # PDF parsing/OCR (extract_ingest_data) is CPU-bound and per-file
-    # independent, so it's fanned out across worker processes. The actual
-    # writes (write_ingest_data) touch Chroma/the embedder/sqlite, which
-    # must stay on one consistent thread/process (see retrieval.py's
-    # _chroma_thread comment on the cross-thread ChromaDB bug) -- so results
-    # are written back sequentially here in the main process as each
-    # extraction finishes, never in parallel.
     total = len(to_ingest)
     done = 0
     if len(to_ingest) == 1:
@@ -117,12 +98,6 @@ def sync_once(corpus_dir: Path = config.CORPUS_DIR, verbose: bool = False) -> di
 
 
 def _scheduled_sync_once() -> None:
-    # APScheduler's BackgroundScheduler runs jobs on its own dedicated
-    # thread, separate from both FastAPI's request threadpool and
-    # retrieval.py's single Chroma-IO thread -- funnel through the same
-    # one Chroma thread everything else uses, or a periodic scheduled sync
-    # would hit the exact same cross-thread ChromaDB bug the /ask and
-    # /sync endpoints were fixed for.
     retrieval.run_on_chroma_thread(sync_once)
 
 

@@ -1,40 +1,41 @@
-/* Stylesheet for the web UI. The original design bound these as inline
-   CSS custom properties per palette/theme choice; Phase 1 hardcodes the
-   Nova dark palette directly on :root. Phase 5 adds the light/dark toggle
-   and the Ember/Aurora palette swap back in via the same variables. */
+/* Nova palette. Two themes share the same variables, switched by data-theme on <html> (js/theme.js).
+   --accent is for borders, rings and dots. --accent-fill carries white text, --accent-ink is accent text on surfaces.
+   Every text token reaches WCAG AA (4.5:1) on the surfaces it is used on in both themes. */
 
 :root {
-    --bg: #16171C;
-    --bg-elevated: #202127;
-    --sidebar-bg: #1A1B20;
+    --bg: #14151A;
+    --bg-elevated: #1E1F26;
+    --sidebar-bg: #191A1F;
     --border: rgba(255,255,255,0.08);
     --border-strong: rgba(255,255,255,0.16);
     --text: #F1F2F5;
-    --text-muted: #9CA0AC;
-    --text-faint: #656B76;
+    --text-muted: #A3A8B4;
+    --text-faint: #8A909C;
     --accent: #5B6EF5;
+    --accent-fill: #4F63EA;
+    --accent-ink: #9DA8FF;
     --accent-text: #FFFFFF;
     --accent-soft: rgba(91,110,245,0.16);
+    --danger: #E58A8A;
     --shadow-xs: 0 1px 2px rgba(0,0,0,0.35);
     --shadow-sm: 0 6px 18px rgba(0,0,0,0.4);
 }
 
-/* Phase 5: light mode, same variables, flipped values -- every rule below
-   already reads colors from these custom properties, so no other CSS in
-   this file needs to change. Toggled via the `data-theme` attribute on
-   <html> (see _Layout.cshtml's inline init script + wwwroot/js/theme.js). */
 :root[data-theme="light"] {
-    --bg: #F5F6F8;
+    --bg: #F4F5F8;
     --bg-elevated: #FFFFFF;
     --sidebar-bg: #FFFFFF;
     --border: rgba(0,0,0,0.08);
     --border-strong: rgba(0,0,0,0.14);
     --text: #16171C;
-    --text-muted: #5B606B;
-    --text-faint: #8B909B;
+    --text-muted: #555B67;
+    --text-faint: #646A76;
     --accent: #5B6EF5;
+    --accent-fill: #4F63EA;
+    --accent-ink: #4457DB;
     --accent-text: #FFFFFF;
     --accent-soft: rgba(91,110,245,0.12);
+    --danger: #B3261E;
     --shadow-xs: 0 1px 2px rgba(0,0,0,0.06);
     --shadow-sm: 0 6px 18px rgba(0,0,0,0.10);
 }
@@ -46,27 +47,39 @@ body {
     font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--bg);
     color: var(--text);
+    -webkit-font-smoothing: antialiased;
 }
 button, input { font-family: inherit; }
 ::placeholder { color: var(--text-faint); opacity: 1; }
 
+/* Keyboard focus: one visible ring everywhere, mouse clicks stay clean. */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rag-composer input:focus-visible { outline: none; }
+
 .rag-root { width: 100%; height: 100vh; display: flex; overflow: hidden; position: relative; }
-.rag-brand-title { font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif; }
+.rag-brand-title { font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif; letter-spacing: -0.01em; }
+
+/* The brand mark: a rounded square in the accent. It also marks the assistant and the empty state. */
+.rag-mark {
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    background: var(--accent-fill); color: var(--accent-text); border-radius: 9px;
+    font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif; font-weight: 800;
+}
 
 .rag-sidebar-collapse {
     position: absolute; top: 22px; left: 266px; width: 22px; height: 22px;
     border-radius: 50%; border: 1px solid var(--border-strong); background: var(--bg-elevated);
     display: flex; align-items: center; justify-content: center; z-index: 5;
-    box-shadow: var(--shadow-xs); transition: all .15s ease; cursor: pointer; color: var(--text-muted);
+    box-shadow: var(--shadow-xs); transition: border-color .15s ease, color .15s ease; cursor: pointer; color: var(--text-muted);
 }
-.rag-sidebar-collapse:hover { border-color: var(--accent); color: var(--accent); }
+.rag-sidebar-collapse:hover { border-color: var(--accent); color: var(--accent-ink); }
 .rag-sidebar-reopen {
     position: absolute; top: 22px; left: 18px; display: flex; align-items: center; gap: 7px;
     padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border-strong);
     background: var(--bg-elevated); color: var(--text-muted); font-size: 12px; font-weight: 700;
-    box-shadow: var(--shadow-sm); transition: all .15s ease; z-index: 5; cursor: pointer;
+    box-shadow: var(--shadow-sm); transition: border-color .15s ease, color .15s ease; z-index: 5; cursor: pointer;
 }
-.rag-sidebar-reopen:hover { border-color: var(--accent); color: var(--accent); }
+.rag-sidebar-reopen:hover { border-color: var(--accent); color: var(--accent-ink); }
 
 .rag-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
 .rag-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -77,51 +90,54 @@ button, input { font-family: inherit; }
     color: var(--text-faint); border-radius: 8px; border: none; background: transparent;
     letter-spacing: 0.01em; transition: color .15s ease, background .15s ease; cursor: pointer;
 }
-.rag-tab:hover { color: var(--text-muted); }
+.rag-tab:hover { color: var(--text); }
 .rag-tab.active { background: var(--bg-elevated); color: var(--text); box-shadow: var(--shadow-xs); }
 
 .rag-doc-row {
     width: 100%; display: flex; align-items: center; gap: 10px; padding: 9px 11px;
     border-radius: 9px; border: 1px solid transparent; background: transparent;
     color: var(--text-muted); font-size: 12.5px; font-weight: 500; text-align: left;
-    transition: background .12s ease, border-color .12s ease, color .12s ease, transform .12s ease;
+    transition: background .12s ease, border-color .12s ease, color .12s ease;
     cursor: pointer;
 }
-.rag-doc-row:hover { background: var(--bg-elevated); border-color: var(--border); transform: translateX(1px); }
-.rag-doc-row.selected { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.rag-doc-row:hover { background: var(--bg-elevated); border-color: var(--border); color: var(--text); }
+.rag-doc-row.selected { background: var(--accent-soft); color: var(--accent-ink); font-weight: 700; }
 .rag-doc-row .rag-doc-icon { flex-shrink: 0; opacity: 0.7; }
+.rag-doc-title { font-size: 12.5px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rag-doc-row.selected .rag-doc-title { color: var(--accent-ink); }
+.rag-doc-meta { font-size: 11px; font-weight: 500; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rag-doc-row.selected .rag-doc-icon { opacity: 1; }
 
 .rag-session-row {
     padding: 10px 12px; border-radius: 10px; cursor: pointer;
     transition: background .12s ease; display: flex; align-items: center; gap: 9px;
     border: none; background: transparent; width: 100%; text-align: left;
-    /* Buttons don't inherit `color` from the page by default in most browsers
-       (they fall back to the platform's own button-text color, usually
-       black) -- this was the actual cause of illegible black session-row
-       text on the dark sidebar, not a rendering glitch. */
+    /* Buttons do not inherit the page text color, so it is set here. */
     color: var(--text);
 }
 .rag-session-row:hover { background: var(--bg-elevated); }
 .rag-session-row.active { background: var(--accent-soft); }
+.rag-session-row:disabled { opacity: 0.55; cursor: default; }
 
 .rag-icon-btn {
     display: flex; align-items: center; justify-content: center; border-radius: 9px;
-    border: 1px solid var(--border); background: var(--bg-elevated); transition: all .15s ease;
+    border: 1px solid var(--border); background: var(--bg-elevated); transition: border-color .15s ease, box-shadow .15s ease;
     cursor: pointer; color: var(--text);
 }
 .rag-icon-btn:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .rag-icon-btn:active { transform: scale(0.94); }
+.rag-icon-btn:disabled { opacity: 0.55; cursor: default; box-shadow: none; }
 
 .rag-btn-primary {
-    border: none; background: var(--accent); color: var(--accent-text); font-weight: 700;
-    transition: filter .15s ease, transform .1s ease; box-shadow: var(--shadow-sm); cursor: pointer;
+    border: none; background: var(--accent-fill); color: var(--accent-text); font-weight: 700;
+    transition: filter .15s ease, transform .1s ease; cursor: pointer;
 }
-.rag-btn-primary:hover { filter: brightness(1.08); }
+.rag-btn-primary:hover { filter: brightness(1.1); }
 .rag-btn-primary:active { transform: scale(0.97); }
+.rag-btn-primary:disabled { opacity: 0.5; cursor: default; filter: none; transform: none; }
 
 .rag-input {
-    border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text);
+    border: 1px solid var(--border); background: var(--bg); color: var(--text);
     transition: border-color .15s ease, box-shadow .15s ease;
 }
 .rag-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
@@ -133,9 +149,75 @@ button, input { font-family: inherit; }
 .rag-composer:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .rag-composer input { background: transparent; border: none; outline: none; color: var(--text); }
 
-.rag-card { background: var(--bg-elevated); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
 .rag-flag-btn { border: none; background: transparent; color: var(--text-faint); transition: color .15s ease; cursor: pointer; }
-.rag-flag-btn:hover { color: var(--accent); }
+.rag-flag-btn:hover { color: var(--accent-ink); }
+
+/* Chat column */
+.rag-main { background: radial-gradient(900px 320px at 50% -80px, var(--accent-soft), transparent 70%), var(--bg); }
+.rag-header { padding: 18px 34px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.rag-header-title { font-size: 16px; font-weight: 800; letter-spacing: -0.02em; }
+.rag-pad-x { padding-left: 34px; padding-right: 34px; }
+.rag-thread { width: 100%; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+
+.rag-empty { margin: auto; max-width: 600px; width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.rag-empty-title { font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+.rag-empty-hint { font-size: 13.5px; line-height: 1.6; color: var(--text-muted); margin: 0; max-width: 440px; }
+.rag-starters { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; width: min(560px, 100%); margin-top: 2px; }
+.rag-starter {
+    display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 12px 14px; border-radius: 12px;
+    border: 1px solid var(--border-strong); background: var(--bg-elevated); color: var(--text); cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, transform .15s ease;
+}
+.rag-starter:hover { border-color: var(--accent); background: var(--accent-soft); transform: translateY(-1px); }
+.rag-starter-verb { font-size: 11px; font-weight: 700; color: var(--accent-ink); letter-spacing: 0.02em; }
+.rag-starter-title { font-size: 13px; font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; }
+
+.rag-user {
+    align-self: flex-end; max-width: 80%; background: var(--accent-fill); color: var(--accent-text);
+    padding: 12px 18px; font-weight: 500; box-shadow: var(--shadow-sm); border-radius: 16px 16px 4px 16px; font-size: 14px; line-height: 1.55; overflow-wrap: anywhere;
+}
+
+.rag-answer-row { display: flex; gap: 12px; align-items: flex-start; align-self: flex-start; max-width: 100%; }
+.rag-answer {
+    min-width: 0; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 4px 16px 16px 16px;
+    padding: 16px 20px 13px; box-shadow: var(--shadow-sm);
+}
+.rag-answer-body { font-size: 14.5px; line-height: 1.72; white-space: pre-wrap; overflow-wrap: anywhere; }
+.rag-answer-body strong { font-weight: 700; }
+.rag-cite { display: inline-block; margin: 0; padding: 0 5px; border-radius: 6px; background: var(--accent-soft); color: var(--accent-ink); font-size: 11.5px; font-weight: 700; line-height: 1.6; white-space: nowrap; }
+.rag-notes { margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 3px; font-size: 12px; line-height: 1.5; color: var(--text-muted); }
+.rag-meta { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.rag-meta-label { font-size: 11px; font-weight: 700; letter-spacing: 0.02em; color: var(--text-faint); }
+.rag-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.rag-chip {
+    display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 5px 10px; border-radius: 8px;
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-muted);
+    font-size: 11.5px; font-weight: 600; cursor: pointer; transition: border-color .12s ease, color .12s ease, background .12s ease;
+}
+.rag-chip:hover { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-soft); }
+.rag-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rag-disclaimer { font-size: 11.5px; line-height: 1.5; color: var(--text-faint); }
+
+.rag-typing { display: inline-flex; gap: 4px; align-items: center; height: 20px; }
+.rag-typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); animation: rag-bounce 1.2s ease-in-out infinite; }
+.rag-typing i:nth-child(2) { animation-delay: .15s; }
+.rag-typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes rag-bounce { 0%, 60%, 100% { opacity: .35; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
+.rag-spin { animation: rag-rotate 1s linear infinite; }
+@keyframes rag-rotate { to { transform: rotate(360deg); } }
+
+.rag-candidates { background: var(--bg-elevated); border-top: 1px solid var(--border); padding: 12px 34px; flex-shrink: 0; }
+.rag-candidates-inner { max-width: 760px; margin: 0 auto; display: flex; align-items: flex-start; gap: 10px; }
+.rag-candidates .rag-chips { max-height: 112px; overflow-y: auto; flex-grow: 1; min-width: 0; }
+
+.rag-composer-wrap { padding: 14px 34px 22px; flex-shrink: 0; }
+.rag-composer-inner { max-width: 760px; margin: 0 auto; }
+.rag-hint { margin-top: 8px; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+.rag-kbd { font-family: inherit; font-weight: 700; padding: 1px 6px; border: 1px solid var(--border-strong); border-radius: 5px; background: var(--bg-elevated); }
+
+.rag-state-note { font-size: 12px; line-height: 1.5; color: var(--text-muted); padding: 2px 4px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.rag-state-note.error { color: var(--danger); }
+.rag-link-btn { border: none; background: transparent; color: var(--accent-ink); font-size: 12px; font-weight: 700; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 
 .rag-preview-panel {
     width: 336px; flex-shrink: 0; height: 100%; border-left: 1px solid var(--border);
@@ -145,13 +227,31 @@ button, input { font-family: inherit; }
     position: absolute; top: 18px; right: 18px; display: flex; align-items: center; gap: 7px;
     padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border-strong);
     background: var(--bg-elevated); color: var(--text-muted); font-size: 12px; font-weight: 700;
-    box-shadow: var(--shadow-sm); transition: all .15s ease; cursor: pointer;
+    box-shadow: var(--shadow-sm); transition: border-color .15s ease, color .15s ease; cursor: pointer;
 }
-.rag-preview-reopen:hover { border-color: var(--accent); color: var(--accent); }
+.rag-preview-reopen:hover { border-color: var(--accent); color: var(--accent-ink); }
 
 #blazor-error-ui {
-    background: lightyellow; bottom: 0; box-shadow: 0 -1px 2px rgba(0,0,0,0.2);
-    display: none; left: 0; padding: 0.6rem 1.25rem 0.7rem 1.25rem; position: fixed;
-    width: 100%; z-index: 1000;
+    background: var(--bg-elevated); color: var(--text); border-top: 1px solid var(--border-strong);
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.25); display: none; left: 0; padding: 0.7rem 1.25rem;
+    position: fixed; width: 100%; z-index: 1000; font-size: 13px;
 }
-#blazor-error-ui .dismiss { cursor: pointer; position: absolute; right: 0.75rem; top: 0.5rem; }
+#blazor-error-ui .reload { color: var(--accent-ink); font-weight: 700; margin-left: 8px; }
+#blazor-error-ui .dismiss { cursor: pointer; position: absolute; right: 0.75rem; top: 0.6rem; color: var(--text-muted); }
+
+/* Small screens: tighter gutters, comfortable tap targets. The sidebar and preview keep their fixed widths. */
+@media (max-width: 820px) {
+    .rag-header, .rag-pad-x, .rag-candidates, .rag-composer-wrap { padding-left: 16px; padding-right: 16px; }
+    .rag-user { max-width: 92%; }
+    /* The sidebar and the preview lie over the chat instead of squeezing it; their own close buttons dismiss them. */
+    .rag-sidebar { position: absolute; left: 0; top: 0; z-index: 20; width: min(300px, 88vw) !important; box-shadow: var(--shadow-sm); }
+    .rag-preview { position: absolute; right: 0; top: 0; z-index: 15; width: 100% !important; min-width: 0 !important; max-width: none !important; }
+}
+@media (pointer: coarse) {
+    .rag-icon-btn, .rag-chip, .rag-tab { min-height: 44px; }
+    .rag-icon-btn { min-width: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .rag-typing i, .rag-spin { animation: none; }
+    * { transition: none !important; }
+}

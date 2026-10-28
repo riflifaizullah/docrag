@@ -3,11 +3,7 @@ using RagSystemWeb.Services;
 
 namespace RagSystemWeb.Tests;
 
-/// <summary>
-/// Hand-rolled fake, not a mocking library -- four methods, no behavior
-/// worth a framework for. Each call is counted and each response/exception
-/// is settable per test via the public fields.
-/// </summary>
+/// <summary>Hand-rolled fake, not a mocking library -- four methods, no behavior worth a framework for.</summary>
 public sealed class FakeApiClient : IApiClient
 {
     public int CreateSessionCallCount { get; private set; }
@@ -16,10 +12,6 @@ public sealed class FakeApiClient : IApiClient
     public Func<string>? CreateSessionResult { get; set; }
     public Exception? CreateSessionThrows { get; set; }
 
-    // Returns a Task, not a value, so a test can hand back an uncompleted
-    // TaskCompletionSource.Task to control exactly when AskAsync "returns"
-    // -- needed to test the IsBusy re-entrancy guard, which only matters
-    // while a real call is genuinely still in flight.
     public Func<string, Task<AskResponse>>? AskResult { get; set; }
     public Exception? AskThrows { get; set; }
 

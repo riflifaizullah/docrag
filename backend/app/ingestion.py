@@ -1,30 +1,5 @@
-"""PDF parsing (with OCR fallback for scanned pages), heading detection,
-chunking, embedding, and writing into ChromaDB.
-
-Heading detection carries the fixes for known-bugs #2, #3, #4 from the
-rebuild spec:
-  - headings are stored per-source so lookups can be scoped to specific
-    documents instead of the whole corpus (bug #2 was a *lookup*-side bug,
-    but storage has to preserve `source`/`page` for that to be possible);
-  - multi-line merge cap is 5 lines, not 3 (bug #4);
-  - a bold line with >=4 words ending in .!? is treated as ordinary prose
-    and excluded from merging into a heading run, so it can no longer
-    swallow-and-drop an adjacent real heading (bug #3).
-
-Two later additions layered on top:
-  - OCR gets grayscale + Otsu binarization + deskew preprocessing before
-    Tesseract (`_preprocess_for_ocr`), plus per-page average word
-    confidence captured and carried all the way into chunk metadata, so a
-    low-confidence scanned page is a visible, distinct signal from
-    ordinary LLM-fabrication risk rather than silently mixed into it.
-  - chunk_page_text() is structure-aware: it prefers splitting on detect_
-    headings() output (one PASAL-with-sub-clauses or one LAMPIRAN/SOP-
-    section per top-level chunk) over blind character-count windows,
-    because a blind sliding window was confirmed to cut a single clause in
-    half and land the fact a question asks about in a chunk missing its
-    own value (the "Ayat 11.1" incident). Clause/step-marker splitting and
-    a final sliding window still exist as fallbacks for content with no
-    clean heading structure.
+"""PDF parsing (with OCR fallback for scanned pages), heading detection, chunking, embedding,
+and writing into ChromaDB.
 """
 from __future__ import annotations
 
@@ -40,7 +15,7 @@ import numpy as np
 import pdfplumber
 import requests
 
-from app import config, database
+from app import config, database, lang
 
 try:
     import cv2
@@ -49,60 +24,15 @@ try:
     from PIL import Image
 
     _OCR_AVAILABLE = True
-except ImportError:  # pragma: no cover - OCR deps are optional on this laptop
+except ImportError:  # pragma: no cover - OCR deps are optional
     _OCR_AVAILABLE = False
 
 
 def _patch_pdfminer_cmap_range_bomb() -> None:
-    """pdfminer.six's CMapParser expands a font's embedded begincidrange/
-    beginbfrange declarations with a bare `for i in range(end - start + 1)`
-    and no sanity bound on the range size -- confirmed live: a real corpus
-    file (during the first full-ingest run, ~16/1149 files in) has a
-    corrupted/malformed embedded font whose CMap declares a range so large
-    that this loop tried to build a dict with an astronomical number of
-    entries, raising MemoryError and, because the OS ran out of RAM for
-    everyone, cascading MemoryErrors into unrelated sibling worker
-    processes' ordinary OCR subprocess calls at the same time -- looked at
-    first like a parallelism/memory-capacity problem, but is really a
-    single malformed file with no other symptom until this exact code path
-    runs. This is a known category of pdfminer weakness (unbounded
-    resource consumption on malformed CMap data), not specific to any one
-    document's content.
-
-    First attempt capped each single cidrange/bfrange declaration at
-    100,000 entries -- confirmed live that's NOT enough: the fix still
-    crashed with the same MemoryError on the very next full-ingest attempt,
-    because the cap was per-declaration, not per-font. A malformed font can
-    spread the same total blowup across many separate range blocks, each
-    individually under any single-declaration cap, that still sum to an
-    unbounded total. Fixed properly this time with a running total cap
-    across the whole font's cid2unichr/code2cid map (checked before
-    expanding each range, and re-checked every 4096 iterations inside the
-    loop so one block alone can't blow past it either) -- once the font's
-    total mapped-entry count hits _MAX_CMAP_TOTAL, remaining entries for
-    that font are skipped rather than crashing, exactly like the existing
-    _looks_like_real_text/CID-artifact check already treats a broken font
-    as "fall back to OCR for this page" rather than trusting corrupted
-    output.
-
-    Second attempt (the per-font count cap above) STILL crashed with the
-    identical MemoryError on the next full-ingest attempt -- the count cap
-    bounds the number of dict *entries*, but not the *size* of each one.
-    The range/code operands (start_byte/end_byte/code) are bytes objects
-    taken straight from the file with no length check; a malformed operand
-    of unbounded byte length gets re-sliced (`operand[:-4]`) on every loop
-    iteration, and each slice COPIES that entire blob -- so one huge
-    operand exhausts memory in a handful of iterations, well before the
-    every-4096-iterations count check ever gets a chance to fire. Real CID/
-    code operands are 1-4 bytes, occasionally 8; fixed by also rejecting
-    any operand longer than _MAX_OPERAND_BYTES before entering the
-    expansion loop at all.
-
-    Copies pdfminer.six's own do_keyword logic (fixed version: 3.0.x line)
-    rather than wrapping it, since the unbounded loop is *inside* the two
-    range branches with no seam to intercept from outside; every other
-    keyword branch delegates to the original unpatched method so behavior
-    elsewhere is unchanged."""
+    """pdfminer.six's CMapParser expands a font's embedded begincidrange/ beginbfrange
+    declarations with a bare `for i in range(end - start + 1)` and no sanity bound on the
+    range size.
+    """
     from pdfminer import cmapdb
 
     _MAX_CMAP_TOTAL = 200_000  # total entries per font, not per declaration
@@ -110,22 +40,12 @@ def _patch_pdfminer_cmap_range_bomb() -> None:
     _original_do_keyword = cmapdb.CMapParser.do_keyword
 
     def _map_size(cmap) -> int:
-        # FileUnicodeMap/FileCMap both keep their real data in cid2unichr or
-        # code2cid depending on which base class is in play; check whichever
-        # exists rather than assuming one.
         d = getattr(cmap, "cid2unichr", None)
         if d is not None:
             return len(d)
         d = getattr(cmap, "code2cid", None)
         return len(d) if d is not None else 0
 
-    # Real CID/code operands are 1-4 bytes, occasionally 8 -- confirmed live
-    # this needs its own bound distinct from the entry-count cap: a
-    # malformed operand of unbounded byte length gets re-sliced
-    # (`operand[:-4]`) on every one of up to thousands of loop iterations
-    # before the count cap even has a chance to fire, and each slice COPIES
-    # that entire blob, so a single huge operand exhausts memory in a
-    # handful of iterations regardless of how low the entry-count cap is.
     _MAX_OPERAND_BYTES = 32
 
     def _patched_do_keyword(self, pos, token):
@@ -192,10 +112,6 @@ def _patch_pdfminer_cmap_range_bomb() -> None:
 _patch_pdfminer_cmap_range_bomb()
 
 
-# ---------------------------------------------------------------------------
-# Page / line extraction
-# ---------------------------------------------------------------------------
-
 @dataclass
 class Line:
     text: str
@@ -252,34 +168,11 @@ def _extract_page_lines(page: "pdfplumber.page.Page") -> list[Line]:
 
 
 _OCR_LANG = "ind+eng"  # Indonesian first: the corpus is predominantly Indonesian legal/SOP text
-# 200. History (see git log for the full back-and-forth): raised to 400
-# after an isolated single-page test recovered a digit Tesseract dropped
-# at 200 ("21 August 2025" -> "August 2025"). Deployed straight into the
-# real ~1131-file ingest without a concurrent-load test first, and the
-# whole pipeline stalled for 7+ hours with zero files completed. Added
-# real subprocess timeouts (OCR_RENDER_TIMEOUT_SECONDS etc., kept
-# regardless of DPI -- a genuine, unconditional safety improvement) and
-# re-tested 400 properly this time with a real concurrent-load test (15
-# real files, config.INGEST_PARALLEL_WORKERS parallel workers, matching
-# real production concurrency): confirmed safe, no hangs, all 15 completed
-# (12 fast, 3 large documents taking 8-11.5 minutes each -- real work
-# scaling with size, not a stall).
-#
-# But then re-checked the ORIGINAL motivating digit through the actual
-# full extraction pipeline (orientation correction + preprocessing +
-# column reconstruction together, not the narrower isolated single-page
-# OCR call used for the first test) -- confirmed live it's back to
-# dropping the digit ("August 2025", no "21") even at 400 DPI. The
-# accuracy benefit that justified paying for 400's extra processing time
-# in the first place does not reliably reproduce through the real
-# pipeline, so there's no longer a good reason to pay that cost. Reverted
-# to 200, the historically stable value, while keeping the timeout fix.
 _OCR_DPI = 200
 
 
 def _preprocess_for_ocr(image: "Image.Image") -> "Image.Image":
-    """Grayscale + Otsu binarization + deskew. Confirmed to help more than
-    any single Tesseract config tweak, per the OCR-quality checklist."""
+    """Grayscale, Otsu binarization and deskew before OCR."""
     gray = np.array(image.convert("L"))
     _, binarized = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
@@ -297,30 +190,10 @@ def _preprocess_for_ocr(image: "Image.Image") -> "Image.Image":
 
 
 def _reconstruct_text_from_ocr_data(data: dict) -> str:
-    """Rebuilds line text from Tesseract's own word-level bounding boxes
-    instead of trusting image_to_string()'s line merging, which happily
-    joins two side-by-side table columns into one interleaved line --
-    confirmed live: a two-column title-block table ("FUNGSI: ... NOMOR:
-    ...") came out as one line mixing both columns' fields and values,
-    which a small LLM then couldn't reliably untangle. An unusually large
-    horizontal gap between consecutive words Tesseract placed on the same
-    detected line is a real table-cell boundary, not a longer-than-usual
-    word space -- splitting there into a separate output line lets each
-    column be read (and later heading/field-detection logic) on its own,
-    without merging unrelated columns. Structural, from real pixel
-    positions -- not a guess based on this corpus's specific field names.
-
-    Known open limitation, confirmed live: a dense, fine-grained multi-
-    column FORM (a 6-column signature/routing sheet, not a simple 2-column
-    title block) still produces word-order-scrambled output even after
-    ordering lines by real vertical position instead of Tesseract's own
-    line numbering -- the underlying ambiguity is Tesseract's own row/
-    column detection on that specific grid density, not just the output
-    ordering. Fixing this properly would need real table-structure
-    detection (image-based cell/grid-line analysis), not another word-
-    position heuristic -- not attempted here since an untested guess on a
-    function every scanned page in the corpus goes through isn't worth the
-    regression risk for one document's layout."""
+    """Rebuilds line text from Tesseract's own word-level bounding boxes instead of trusting
+    image_to_string()'s line merging, which happily joins two side-by-side table columns
+    into one interleaved line.
+    """
     n = len(data.get("text", []))
     groups: dict[tuple, list[int]] = {}
     for i in range(n):
@@ -329,16 +202,6 @@ def _reconstruct_text_from_ocr_data(data: dict) -> str:
         key = (data["block_num"][i], data["par_num"][i], data["line_num"][i])
         groups.setdefault(key, []).append(i)
 
-    # Order lines by their real vertical (top) pixel position, not by
-    # Tesseract's own block/par/line numbering -- confirmed live: a real
-    # multi-column, multi-row table (a 6-column signature/routing sheet)
-    # produced word-order-scrambled output, because Tesseract's internal
-    # line numbering isn't guaranteed to be a single globally-monotonic
-    # top-to-bottom sequence across a fine-grained grid of narrow columns
-    # the way it reliably is for the simpler 2-column title-block case
-    # this function was originally built for. The word-level bounding
-    # boxes' own top coordinate is ground truth for visual reading order
-    # regardless of how Tesseract grouped them.
     def _group_top(key: tuple) -> int:
         return min(data["top"][i] for i in groups[key])
 
@@ -364,25 +227,7 @@ def _reconstruct_text_from_ocr_data(data: dict) -> str:
 
 
 def _correct_orientation(image: "Image.Image") -> "Image.Image":
-    """The main OCR pass assumes upright, left-to-right text -- a page whose
-    real content is rotated 90/180/270 degrees (confirmed live: a real
-    equipment-layout diagram laid out in landscape on a portrait page came
-    out as near-total gibberish) gets read wrong from the start otherwise.
-    Tesseract's Orientation and Script Detection (OSD) is a separate,
-    cheaper pass that estimates the rotation before the real recognition
-    attempt runs, so the image gets corrected instead of just misread.
-
-    Confirmed live this can also make things WORSE: an already-upright,
-    perfectly ordinary cover page got OSD's rotate=180 applied anyway,
-    flipping it into gibberish (a correct page's OCR confidence dropped
-    from the 80s/90s typical of this template to 40.0, extracted text
-    became reversed/mirrored) -- because OSD's own confidence for that
-    guess was only 0.53, essentially a coin flip, and it also misidentified
-    the script as "Greek" (also low-confidence noise). The genuinely
-    correct rotation case (the real rotated diagram) had orientation_conf
-    4.71 -- a wide, clean gap from 0.53. Only trust OSD's rotation when
-    it's actually confident; otherwise leave the page alone rather than
-    risk turning a working page into garbage."""
+    """The main OCR pass assumes upright, left-to-right text."""
     try:
         osd = pytesseract.image_to_osd(
             image, output_type=pytesseract.Output.DICT, timeout=config.OCR_OSD_TIMEOUT_SECONDS
@@ -390,9 +235,6 @@ def _correct_orientation(image: "Image.Image") -> "Image.Image":
         rotation = osd.get("rotate", 0)
         confidence = osd.get("orientation_conf", 0)
     except Exception:
-        # OSD can fail outright on near-blank/low-content pages -- treat as
-        # "no rotation detected" rather than failing OCR for the whole page
-        # over a failed pre-check.
         return image
     if not rotation or confidence < config.OCR_ORIENTATION_MIN_CONFIDENCE:
         return image
@@ -414,20 +256,7 @@ def _run_tesseract(processed: "Image.Image", psm: Optional[int] = None) -> tuple
 
 
 def _ocr_page(pdf_path: Path, page_num: int) -> tuple[str, Optional[float]]:
-    """Returns (text, average_word_confidence). Confidence is a distinct,
-    visible signal from LLM-fabrication risk -- surfaced via answer logging
-    rather than silently folded into ordinary retrieval/generation.
-
-    Runs Tesseract's default page segmentation (PSM 3) plus PSM 6 ("assume a
-    single uniform block of text") and keeps whichever result has the higher
-    average word confidence. Confirmed live: PSM 3 alone drops digits on
-    dense title-block tables (e.g. "21 August 2025" -> "2 August 2025"),
-    which PSM 6 reads correctly -- but PSM 6 alone produces total garbage on
-    decorative, graphic-heavy cover pages where PSM 3 is fine. Their own
-    confidence scores reliably separate these cases on every real page
-    tested (both the fix and the regression cases), so neither mode is
-    trusted unconditionally. Costs a second recognize pass per page, bounded
-    by the same OCR_RECOGNIZE_TIMEOUT_SECONDS as the first."""
+    """Returns (text, average_word_confidence)."""
     if not _OCR_AVAILABLE:
         return "", None
     try:
@@ -448,41 +277,14 @@ def _ocr_page(pdf_path: Path, page_num: int) -> tuple[str, Optional[float]]:
 
         return text, avg_confidence
     except Exception as exc:
-        # _OCR_AVAILABLE already covers "backend not installed at all" (see
-        # the import guard above) -- reaching here means OCR IS available
-        # but failed on this specific page for some other reason. Silently
-        # returning empty text made a real per-page OCR failure
-        # indistinguishable from "nothing to OCR"; logging it doesn't change
-        # the graceful-degradation behavior (ingestion still proceeds).
         print(f"WARNING: OCR failed on {pdf_path.name} page {page_num}: {exc!r}")
         return "", None
 
 
 def _page_is_graphical(page: "pdfplumber.page.Page") -> bool:
-    """A page whose real content is a diagram reads very differently at the
-    structural level than either a flat scan or an ordinary text/table page
-    -- confirmed live (see config.VLM_MIN_CURVES): a scan is one raster
-    image with zero vector drawing primitives, an ordinary table-heavy page
-    has plenty of rects (cell borders) but few curves, while a real
-    vector-drawn diagram (pipes, circular pump/valve icons) is dense with
-    curves. Curve count alone is therefore the discriminating signal --
-    image presence/area alone would wrongly flag every scanned page too.
-
-    Confirmed live this raw count has a real false-positive mode: a signed/
-    export-optimized PDF ("...signed_opt.pdf") renders its TEXT as
-    outlined vector paths instead of embedded font glyphs (one small curve
-    per letter stroke) -- an ordinary page of plain text and a table came
-    back with 3148 curves, every single one under 7pt in both dimensions,
-    and got misflagged as a diagram on all 53 of its pages, each paying a
-    real ~80s+ VLM call for nothing (this is what stalled a real ingest run
-    for 40+ minutes on one file). A genuine diagram page's curves are drawn
-    at a size meant to be visually legible on the page (pipe/valve icon
-    shapes, tens to a hundred+ points): a real confirmed flowchart page had
-    85 total curves but 40 of them exceeded 15pt in either dimension, while
-    the false-positive text page had zero curves that large out of 3148.
-    Counting only curves above that size threshold is what actually
-    distinguishes "many tiny character-stroke curves" from "a few
-    real drawn shapes" -- raw count conflates the two."""
+    """A page whose real content is a diagram reads very differently at the structural level
+    than either a flat scan or an ordinary text/table page.
+    """
     large_curves = sum(
         1 for c in page.curves
         if max(c.get("width", 0), c.get("height", 0)) > config.VLM_MIN_CURVE_SIZE_PT
@@ -491,11 +293,9 @@ def _page_is_graphical(page: "pdfplumber.page.Page") -> bool:
 
 
 def _describe_page_image(pdf_path: Path, page_num: int) -> Optional[str]:
-    """Renders the page and asks the vision-language model to describe it --
-    only called for pages _page_is_graphical() flagged, never for ordinary
-    pages. No grayscale/binarization here (unlike _ocr_page): a VLM benefits
-    from color (e.g. distinguishing a red pipe from a blue one), where OCR
-    only cares about character edges."""
+    """Renders the page and asks the vision-language model to describe it -- only called for
+    pages _page_is_graphical() flagged, never for ordinary pages.
+    """
     if not _OCR_AVAILABLE or not config.VLM_ENABLED:
         return None
     try:
@@ -522,23 +322,10 @@ _VLM_PROMPT = (
 
 
 def _image_content_hash(png_bytes: bytes, cache_context: str = "") -> str:
-    # cache_context (prompt + model) folded in so changing either naturally
-    # invalidates old cache entries -- confirmed live (independent code
-    # review) that hashing image bytes alone would silently keep serving a
-    # stale description forever after a future prompt/model change, with no
-    # signal anything was wrong and no documented way to invalidate it.
     return hashlib.sha256(png_bytes + cache_context.encode("utf-8")).hexdigest()
 
 
 def _describe_image_with_vlm(image: "Image.Image", _retried: bool = False) -> Optional[str]:
-    # Confirmed live: this call's sampling isn't fully deterministic even at
-    # temperature=0 (likely GPU floating-point execution order, not fixable
-    # at the request level -- see config.py's temperature=0 comment), so
-    # re-ingesting an unchanged file could get a different description and
-    # therefore a different chunk count each time. The same rendered page
-    # always hashes the same, though -- caching by that hash makes
-    # re-ingestion of unchanged content deterministic without needing the
-    # model itself to be reproducible.
     buf = io.BytesIO()
     image.save(buf, format="PNG")
     png_bytes = buf.getvalue()
@@ -556,45 +343,16 @@ def _describe_image_with_vlm(image: "Image.Image", _retried: bool = False) -> Op
                 "prompt": _VLM_PROMPT,
                 "images": [b64],
                 "stream": False,
-                # Confirmed live: Ollama's default num_ctx (4096) for this
-                # model left almost no room for a real answer -- the
-                # rendered image alone consumed 4054 of those 4096 tokens,
-                # so the response got cut off after one sentence
-                # (done_reason "length", not an error). Raising it to 8192
-                # let the same call finish naturally (done_reason "stop")
-                # with a full multi-paragraph description.
-                #
-                # temperature=0: this is a literal-extraction task ("list
-                # every visible label exactly as written"), not creative
-                # generation, so lower temperature is the right fit for
-                # accuracy regardless. NOT a determinism fix, though --
-                # confirmed live (20-file re-ingest stress test found 6/20
-                # files got a different chunk count re-ingesting unchanged
-                # content) that outputs still differ run-to-run even with
-                # temperature=0 AND a fixed seed both set -- most likely
-                # non-deterministic floating-point execution order on the
-                # GPU, which no request-level option controls. Re-ingesting
-                # the same file can still shift its exact chunk count
-                # slightly; that's an accepted characteristic of this local
-                # VLM setup, not something believed fixable here.
                 "options": {"num_ctx": config.VLM_CONTEXT_TOKENS, "temperature": 0},
             },
             timeout=config.VLM_TIMEOUT_SECONDS,
         )
         resp.raise_for_status()
     except requests.exceptions.HTTPError:
-        # Same transient-reload behavior as generation.call_ollama() -- the
-        # model may need to be swapped into VRAM (it can't stay resident
-        # alongside OLLAMA_MODEL), and an occasional first request 500s
-        # while that happens.
         if _retried:
             return None
         return _describe_image_with_vlm(image, _retried=True)
     except Exception as exc:
-        # Silently returning None made a real VLM failure (network error,
-        # malformed response) indistinguishable from "nothing to describe" --
-        # logging it doesn't change the graceful-degradation behavior
-        # (ingestion still proceeds without the diagram description).
         print(f"WARNING: VLM description failed: {exc!r}")
         return None
     description = resp.json().get("response", "").strip() or None
@@ -607,28 +365,7 @@ _CID_ARTIFACT_RE = re.compile(r"\(cid:\d+\)")
 
 
 def _looks_like_real_text(text: str) -> bool:
-    """A PDF's own text layer can be present but garbage -- confirmed live:
-    a real equipment-layout diagram (drawn with a custom/broken font whose
-    character codes don't map to real glyphs) came back from pdfplumber as
-    a non-empty string of pure \\x01 control-character bytes. bool(text.
-    strip()) alone treats that as a valid text layer and skips the OCR
-    fallback entirely, losing even the diagram's visible labels -- worse
-    than if the page had no text layer at all. A real text layer is
-    overwhelmingly printable characters; a broken one is dominated by
-    control/non-printable bytes, so that ratio is the structural signal
-    (not particular characters or words) used to tell them apart.
-
-    A second, different broken-font failure mode passes that printable-
-    ratio check while still being unusable -- confirmed live: math-typeset
-    content (LaTeX-style equations, a custom math font) extracted as
-    literal "(cid:N)" glyph-ID artifacts mixed with stray digits, which are
-    >90% ordinary printable ASCII (parentheses/digits/colons) even though
-    the actual equation structure is destroyed. "(cid:" is an internal
-    marker pdfplumber/pdfminer emits specifically for "this font's
-    character code has no real Unicode mapping" -- it is never legitimate
-    content in any real document, in any language, so its presence at all
-    is a reliable, general signal of the same underlying broken-font
-    problem, not specific to math or any one document."""
+    """A PDF's own text layer can be present but garbage."""
     stripped = text.strip()
     if not stripped:
         return False
@@ -657,7 +394,7 @@ def extract_pdf_pages(pdf_path: Path) -> list[Page]:
             if _page_is_graphical(page):
                 vlm_description = _describe_page_image(pdf_path, i)
                 if vlm_description:
-                    label = "[Deskripsi diagram/gambar dari halaman ini]"
+                    label = lang.get().VLM_LABEL
                     text = f"{text}\n\n{label}\n{vlm_description}" if text.strip() else f"{label}\n{vlm_description}"
                     lines = lines + [
                         Line(text=t, bold=False, is_first_line_of_page=False, line_no=len(lines) + j)
@@ -675,76 +412,18 @@ def extract_pdf_pages(pdf_path: Path) -> list[Page]:
     return pages
 
 
-# ---------------------------------------------------------------------------
-# Heading detection
-# ---------------------------------------------------------------------------
+_NUMBERED_HEADING = re.compile(r"^\d+(\.\d+)*\.?\s+(?=\S*[A-Za-z])\S+")
 
-_HEADING_PATTERNS = [
-    re.compile(r"^(PASAL|Pasal)\s+\d+", re.IGNORECASE),
-    re.compile(r"^(LAMPIRAN|Lampiran)\s+[A-Za-z0-9]+", re.IGNORECASE),
-    re.compile(r"^(BAB|Bab)\s+[IVXLC0-9]+", re.IGNORECASE),
-    # numbered section e.g. "3." or "3.1 Ruang Lingkup" -- the lookahead
-    # requires a real letter somewhere in the trailing token, not just
-    # \S+ (any non-space run). Confirmed live: without it, this matched a
-    # revision-checkbox row ("REVISI KE : 0 1 2 3 4" renders as a bare
-    # "0 1 2 3 4" text line) as a false "heading", which then split a
-    # title-block metadata table in half at chunking time -- scattering a
-    # document's own NOMOR/FUNGSI fields into one chunk and its BERLAKU
-    # TMT/JUDUL/HALAMAN fields into another that doesn't repeat the
-    # number, so a later lookup for either field could land on only one
-    # half. A genuine numbered heading's text is always real words, never
-    # just more bare digits, so this excludes checkbox/pagination-style
-    # digit runs structurally instead of naming any specific corpus's
-    # checkbox convention.
-    re.compile(r"^\d+(\.\d+)*\.?\s+(?=\S*[A-Za-z])\S+"),
-]
+
+def _heading_patterns() -> list[re.Pattern]:
+    return [p for mod in lang.all_modules() for p in mod.HEADING_PATTERNS] + [_NUMBERED_HEADING]
 
 _SENTENCE_END = re.compile(r"[.!?]$")
 
-# A real heading starts its own line/block. An in-body cross-reference like
-# "...sebagaimana dimaksud dalam Pasal 15, dan disimpan..." only ever
-# produces a false PASAL-pattern match when a PDF's line-wrap happens to
-# fall right before "Pasal 15" -- the two structural tells of that case
-# (not of a genuine heading) are: (a) the text right after the identifier
-# keeps running as the same sentence (starts with a comma or a lowercase
-# word), or (b) the text right before this line was itself still mid-
-# sentence (no sentence-ending punctuation, last word lowercase), meaning
-# this "heading" line is a wrapped continuation, not a fresh block start.
-# Same reasoning family as the existing bold-ordinary-sentence exclusion
-# (_is_ordinary_sentence) below -- structural position/continuation, not a
-# hardcoded word list.
 _MIDSENTENCE_CONTINUATION_RE = re.compile(r"^[,;:]?\s*[a-z]")
 
-# Mirror-image case of the one above: an ordinary body paragraph whose
-# first wrapped line simply happens to land at the top of a fresh page
-# (arbitrary pagination, unrelated to any section boundary) reads exactly
-# like a short heading -- properly capitalized, short first line, "first
-# line of the page" -- but its content keeps running as the same sentence
-# on the line right after it, ending only well past where a real heading
-# would ("Sub-bagian 3 pada bagian Tujuan ... menjelaskan pemeriksaan" /
-# "berkala terhadap peralatan ..." split exactly at the page break).  A
-# genuine heading is never followed by a lowercase continuation of its own
-# sentence -- the line after it always starts a new clause/sentence
-# instead. Same family of check as _is_midsentence_reference above (a
-# sentence continuing across a line boundary means that boundary isn't a
-# real heading edge), just looking forward instead of backward.
 _LOWERCASE_START_RE = re.compile(r"^[a-z]")
 
-# "Halaman 3 dari 36" / "Page 3 of 36" / "Hal. 3/36" -- a page-number
-# footer/header, a universal pagination convention (not a corpus-specific
-# word list the way document-type or section-keyword vocabulary would be,
-# same justification as the value-unit filter elsewhere in this codebase).
-# Repetition-based filtering (_filter_repeating_headers below) can't
-# reliably catch this on its own: it only repeats as a *captured heading
-# candidate* when it happens to coincide with another candidacy signal
-# (bold/first-of-page/pattern-match) on that particular page, so on a
-# real scanned document it was captured only 2 times across 36 pages --
-# nowhere near enough for a frequency threshold, even a low one, without
-# risking false positives on genuinely-repeated short real headings.
-# Matching the "<number> dari/of <number>" shape directly, anchored at
-# the end of the line to tolerate whatever OCR-garbled prefix precedes it
-# (confirmed live: "HALAMAN 1 12 dari 36", a misread colon), catches it
-# regardless of how many times it was captured.
 _PAGINATION_LINE_RE = re.compile(r"\d+\s*(?:dari|of|/)\s*\d+\s*$", re.IGNORECASE)
 
 
@@ -761,18 +440,12 @@ def _is_midsentence_reference(line_text: str, match_end: int, prev_line: Optiona
 
 
 def _looks_like_heading_candidate(line: Line, prev_line: Optional[Line] = None) -> bool:
-    """A line is a heading candidate if it's bold OR the first line of the
-    page OR matches a known structural pattern -- NOT merely "any short
-    line", which floods results with false positives on documents full of
-    short labeled fields (see known limitation notes)."""
-    pattern_match = next((p.match(line.text) for p in _HEADING_PATTERNS if p.match(line.text)), None)
+    """A line is a heading candidate if it's bold OR the first line of the page OR matches a
+    known structural pattern.
+    """
+    pattern_match = next((p.match(line.text) for p in _heading_patterns() if p.match(line.text)), None)
     if pattern_match:
         return not _is_midsentence_reference(line.text, pattern_match.end(), prev_line)
-    # bold/first-of-page candidacy has no keyword pattern to anchor on, so a
-    # line starting with a lowercase word (a stray cross-reference sentence
-    # like "dalam Pasal 15, dan disimpan...", not a fragment mid-merge but a
-    # complete sentence in its own right) is excluded outright -- every real
-    # heading in this corpus starts with a capital letter or a digit.
     if _LOWERCASE_START_RE.match(line.text.strip()):
         return False
     if _PAGINATION_LINE_RE.search(line.text.strip()):
@@ -794,25 +467,8 @@ def _is_ordinary_sentence(line: Line) -> bool:
 
 
 def _filter_repeating_headers(headings: list[dict], total_pages: int) -> list[dict]:
-    """A genuine heading occurs once; a running header/footer template (a
-    page-number line, a revision-row, a document title repeated on every
-    page) occurs -- verbatim except for the digits -- on a large fraction
-    of the document's pages. Detecting that by REPETITION, not by matching
-    a specific phrase (this corpus's "HALAMAN X dari Y" wouldn't
-    generalize to a differently-worded or differently-languaged real
-    document), filters running headers/footers out of the heading index
-    generically -- this is the "running-header style heading
-    detect_headings() missed" limitation flagged elsewhere in this module,
-    now actually handled instead of just documented.
-
-    A first-line-of-page heading immediately followed (same page) by one
-    of these repeating lines is very likely OCR-garbled decorative
-    header/margin text glued to that same running-header block (confirmed
-    live: a scanned page's OCR misread its rotated/decorative margin text
-    as "Lena OE ENE", immediately followed by "HALAMAN 21 dari 36") --
-    even though the garbled text itself never repeats verbatim (OCR
-    misreads it slightly differently each time), so it wouldn't be caught
-    by the repetition check on its own text alone.
+    """A genuine heading occurs once; a running header/footer template (a page-number line, a
+    revision-row, a document title repeated on every page) occurs.
     """
     if total_pages < 4 or not headings:
         return headings
@@ -857,10 +513,6 @@ def detect_headings(pages: list[Page]) -> list[dict]:
             if i > 0:
                 prev_line = page.lines[i - 1]
             else:
-                # cross-page continuity: a candidate that's the first line
-                # of its page needs the PREVIOUS page's last line to know
-                # whether it's a wrapped mid-sentence continuation, not None
-                # (which would always look like a fresh start).
                 prev_line = None
                 for back in range(page_idx - 1, -1, -1):
                     if pages[back].lines:
@@ -891,13 +543,6 @@ def detect_headings(pages: list[Page]) -> list[dict]:
                     if pages[fwd].lines:
                         next_line = pages[fwd].lines[0]
                         break
-            # A candidate immediately followed by a lowercase continuation
-            # of its own sentence, OR by a page-number footer/header line,
-            # is page-top furniture (decorative margin text, a logo/stamp
-            # OCR misread, a running header) glued to that footer -- not a
-            # real heading -- even when the candidate's own text doesn't
-            # itself match the pagination pattern (it's the OCR-garbled
-            # neighbor of one).
             next_text = next_line.text.strip() if next_line is not None else ""
             prose_continuation = bool(next_text) and (
                 _LOWERCASE_START_RE.match(next_text) or _PAGINATION_LINE_RE.search(next_text)
@@ -909,27 +554,11 @@ def detect_headings(pages: list[Page]) -> list[dict]:
                     headings.append(
                         {"page": page.page_num, "text": merged_text, "line_no": line.line_no}
                     )
-            # else: run exceeded the cap, or reads straight into a lowercase
-            # continuation of its own sentence -- drop it rather than store
-            # something misleading (documented open limitation for the cap
-            # case; a genuine body-paragraph false-positive for the other)
             i = j if j > i else i + 1
 
     return _filter_repeating_headers(headings, len(pages))
 
 
-# ---------------------------------------------------------------------------
-# Chunking
-# ---------------------------------------------------------------------------
-
-# A blind sliding-window split can cut a single clause/step in half, landing
-# the fact a question asks about in a chunk that's missing its own value
-# (confirmed on the longer regenerated corpus: "Ayat 11.1" split so the
-# retrieved chunk had the clause number but not its "34 hari kerja" value).
-# Split on structural boundaries first -- PASAL/LAMPIRAN/numbered-section
-# headings, then sub-clause markers ("11.1" on its own line, or "3) ..."
-# numbered step lines) -- so each clause/step stays intact in one chunk,
-# and only fall back to a sliding window for a segment that's still too big.
 _CLAUSE_MARKER_RE = re.compile(r"^\d+\.\d+$")
 _STEP_MARKER_RE = re.compile(r"^\d+\)\s")
 
@@ -985,14 +614,10 @@ def _split_by_heading_positions(text: str, positions: list[int]) -> list[str]:
 
 
 def chunk_page_text(text: str, page_num: int, page_headings: Optional[list[str]] = None) -> list[dict]:
-    """Structure-aware: a chunk boundary aligns with a detected heading
-    (one PASAL-with-its-sub-clauses, or one LAMPIRAN/SOP-section, becomes
-    one top-level segment) instead of an arbitrary character count. Falls
-    back to the local heading-pattern regex when no headings were detected
-    for this page (e.g. a running-header style heading detect_headings()
-    missed -- see the known heading-detection limitation). Either way, an
-    oversized segment still gets split further by clause/step markers, then
-    a sliding window, so nothing breaks for content without clean structure."""
+    """Structure-aware: a chunk boundary aligns with a detected heading (one PASAL-with-its-
+    sub-clauses, or one LAMPIRAN/SOP-section, becomes one top-level segment) instead of an
+    arbitrary character count.
+    """
     text = text.strip()
     if not text:
         return []
@@ -1007,7 +632,7 @@ def chunk_page_text(text: str, page_num: int, page_headings: Optional[list[str]]
 
     if top_sections is None:
         top_sections = _split_on_markers(
-            text.split("\n"), lambda l: any(p.match(l) for p in _HEADING_PATTERNS)
+            text.split("\n"), lambda l: any(p.match(l) for p in _heading_patterns())
         )
 
     final_texts: list[str] = []
@@ -1052,35 +677,9 @@ def _normalize_line_for_repeat_check(text: str) -> str:
 
 
 def _strip_repeating_page_lines(pages: list[Page]) -> None:
-    """Mutates pages in place, removing lines that repeat (punctuation/
-    digit-normalized) across a large fraction of the document's pages --
-    a running header/title-block table included as literal page content
-    on every page, not just an occasional heading-detection artifact.
-    Confirmed live: a real document's title-block ("FUNGSI: ... NOMOR:
-    ... JUDUL: ... BERLAKU TMT: 1 November 2024 ... HALAMAN: X dari 48")
-    repeated on nearly every page, so a query whose answer happens to
-    live inside that boilerplate (the document's own effective-date
-    field) retrieved 4 near-duplicate copies of the same jumbled
-    two-column table instead of unique content -- drowning out retrieval
-    diversity and giving the LLM nothing but repeated noise to extract
-    the one requested field from. Same repetition-detection principle as
-    _filter_repeating_headers() above, applied to raw chunkable page
-    content instead of the derived headings list, with punctuation
-    stripped too (not just digits) since OCR renders this boilerplate
-    with slightly different stray punctuation on every page.
-
-    Only DUPLICATE occurrences are stripped -- the first one is always
-    kept. A running header often carries a genuine document-wide fact
-    (an effective date, a revision number), not just decoration; that
-    fact is only "repeated" because a header rewrites the same true
-    value on every page, not because it's noise. Confirmed live: an
-    earlier version of this function stripped a document's "BERLAKU TMT"
-    (effective-date) line entirely as repeating boilerplate, and the
-    only date left in context was an unrelated approval-sheet signing
-    date, which the model then wrongly reported as the effective date.
-    Keeping exactly one copy still eliminates the retrieval-diversity
-    problem (duplicate chunks crowding out unique content) without
-    deleting the only place a real fact was recorded."""
+    """Mutates pages in place, removing lines that repeat (punctuation/ digit-normalized)
+    across a large fraction of the document's pages.
+    """
     if len(pages) < 4:
         return
     counts: dict[str, int] = {}
@@ -1109,22 +708,10 @@ def _strip_repeating_page_lines(pages: list[Page]) -> None:
             page.full_text = "\n".join(l.text for l in kept)
 
 
-# ---------------------------------------------------------------------------
-# Full ingestion of a single file
-# ---------------------------------------------------------------------------
-
 def extract_ingest_data(pdf_path: Path) -> dict:
-    """CPU-bound half of ingestion: PDF parsing, OCR, heading detection, and
-    chunking -- no Chroma, no embedder, no sqlite. Touches nothing shared, so
-    it's the half that's safe to fan out across worker processes; the actual
-    writes stay serialized (see write_ingest_data() and its callers).
-
-    One exception: a page flagged graphical (see _page_is_graphical) makes a
-    network call to the local Ollama server for a VLM description. Still
-    safe from multiple worker processes -- Ollama itself serializes/queues
-    concurrent requests -- but slower than pure CPU work, and rare enough
-    (only genuinely diagram-heavy pages) that it doesn't change the overall
-    parallelization strategy."""
+    """CPU-bound half of ingestion: PDF parsing, OCR, heading detection, and chunking -- no
+    Chroma, no embedder, no sqlite.
+    """
     source = pdf_path.name
     pages = extract_pdf_pages(pdf_path)
     _strip_repeating_page_lines(pages)
@@ -1164,12 +751,9 @@ def _chunk_log_records(all_chunks: list[dict], ocr_confidence_by_page: dict[int,
 
 
 def write_chunk_log_md(source: str, records: list[dict]) -> Path:
-    """Human-readable per-document Markdown log under data/chunk_logs/,
-    rewritten in full every time this source is (re-)ingested -- same idea
-    as database._write_session_log_file for chat history: Chroma stays the
-    real source of truth, this is just an always-current, easy-to-open view
-    of exactly what ingestion produced, for checking OCR/chunking quality
-    without querying anything."""
+    """Human-readable per-document Markdown log under data/chunk_logs/, rewritten in full every
+    time this source is (re-)ingested.
+    """
     config.CHUNK_LOGS_DIR.mkdir(parents=True, exist_ok=True)
     out_path = config.CHUNK_LOGS_DIR / f"{source}.md"
     with open(out_path, "w", encoding="utf-8") as f:
@@ -1187,10 +771,7 @@ def remove_chunk_log(source: str) -> None:
 
 
 def write_ingest_data(pdf_path: Path, data: dict, collection, embedder) -> int:
-    """Chroma/sqlite-writing half of ingestion. Must run on whatever single
-    thread the rest of the app already funnels Chroma access through (see
-    retrieval._chroma_thread) -- never call this from more than one thread
-    or process at a time."""
+    """Chroma/sqlite-writing half of ingestion."""
     source = data["source"]
     headings = data["headings"]
     all_chunks = data["all_chunks"]
@@ -1202,14 +783,6 @@ def write_ingest_data(pdf_path: Path, data: dict, collection, embedder) -> int:
     try:
         collection.delete(where={"source": source})
     except Exception as exc:
-        # A silently swallowed failure here used to mean: if delete fails
-        # for a real reason (lock, corruption), collection.add() below still
-        # runs, leaving this source's STALE old chunks and fresh new chunks
-        # both indexed together -- a real retrieval-quality risk with zero
-        # visibility it ever happened. Not changing the fallback behavior
-        # itself here (no verified evidence of why it was originally lenient
-        # -- possibly a harmless "nothing to delete yet" case on first-ever
-        # ingest of a new source), but a failure is no longer invisible.
         print(f"WARNING: collection.delete failed for source={source!r}: {exc!r}")
 
     if all_chunks:
@@ -1221,9 +794,6 @@ def write_ingest_data(pdf_path: Path, data: dict, collection, embedder) -> int:
                 "source": source,
                 "page": c["page"],
                 "chunk_index": c["chunk_index"],
-                # -1 sentinel means "not OCR'd" -- Chroma metadata can't
-                # hold None, and this keeps OCR confidence a visible,
-                # queryable signal distinct from LLM-fabrication risk.
                 "ocr_confidence": ocr_confidence_by_page.get(c["page"]) if ocr_confidence_by_page.get(c["page"]) is not None else -1.0,
             }
             for c in all_chunks
@@ -1249,11 +819,6 @@ def remove_file(source: str, collection) -> None:
     try:
         collection.delete(where={"source": source})
     except Exception as exc:
-        # Same risk as write_ingest_data's delete, mirrored: database.
-        # delete_document() below still runs regardless, so a silently
-        # failed collection.delete() means sqlite says this source is gone
-        # while its chunks remain live and queryable in the vector store
-        # indefinitely, with zero visibility it happened.
         print(f"WARNING: collection.delete failed for source={source!r}: {exc!r}")
     remove_chunk_log(source)
     database.delete_document(source)

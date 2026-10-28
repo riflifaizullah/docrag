@@ -1,4 +1,5 @@
 @page "/Error"
+@inject RagSystemWeb.Services.UiStrings T
 
-<h1>Terjadi kesalahan.</h1>
-<p>Coba muat ulang halaman.</p>
+<h1>@T["error_title"]</h1>
+<p>@T["error_hint"]</p>

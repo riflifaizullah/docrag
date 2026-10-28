@@ -3,11 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace RagSystemWeb.State;
 
-/// <summary>
-/// Ported from dotnet/RagSystemDesktop/ViewModels/ChatMessageViewModel.cs
-/// unchanged in substance -- a plain data holder either way, WPF vs
-/// Blazor doesn't matter for this one.
-/// </summary>
+/// <summary>Ported from dotnet/RagSystemDesktop/ViewModels/ChatMessageViewModel.cs unchanged in substance -- a plain data holder either way, WPF vs.</summary>
 public sealed class ChatMessageState
 {
     public required string Role { get; init; } // "user" | "assistant"
@@ -19,30 +15,32 @@ public sealed class ChatMessageState
 
     private static readonly Regex BoldMarkdown = new(@"\*\*(.+?)\*\*", RegexOptions.Compiled);
 
-    // The LLM writes real Markdown (mostly **bold**) into its answers, but
-    // the UI was rendering it as plain text -- literal asterisks instead of
-    // bold. HTML-encode first (this is LLM/document-derived text, not a
-    // trusted string) so only the specific <strong> tags this method adds
-    // itself ever reach the page, then convert just that one construct --
-    // not a full Markdown renderer, nothing else has shown up in practice.
-    public string FormattedHtml => BoldMarkdown.Replace(WebUtility.HtmlEncode(Text), "<strong>$1</strong>");
+    // The backend appends "\n\n---\n" + notes + a short disclaimer to every answer. The page shows its own
+    // disclaimer, so the backend one is dropped and the remaining notes are shown apart from the answer.
+    private const string FooterDivider = "\n\n---\n";
+    private static readonly string[] BackendDisclaimers = ["Generated automatically", "Dihasilkan otomatis"];
 
-    // Exact disclaimer text, must stay identical across
-    // every frontend that's ever been built for this project.
-    public string? Disclaimer => IsAssistant
-        ? "⚠️ AI dapat membuat kesalahan. Mohon periksa kembali dokumen sumber sebelum digunakan."
-        : null;
+    private int FooterStart => IsAssistant ? Text.IndexOf(FooterDivider, StringComparison.Ordinal) : -1;
 
-    // Flagging is per-message UI state, not resubmitted -- once flagged,
-    // the "Tandai" button shows a confirmation instead of reopening the
-    // category picker. CanFlag is false whenever LogId is null (per
-    // backend/app/generation.py: a combined multi-source answer's inner
-    // recursive call may not produce a single log row).
+    public string Body => FooterStart < 0 ? Text : Text[..FooterStart];
+
+    public List<string> Notes => FooterStart < 0
+        ? []
+        : Text[(FooterStart + FooterDivider.Length)..]
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(line => !BackendDisclaimers.Any(d => line.StartsWith(d, StringComparison.Ordinal)))
+            .ToList();
+
+    // "(p. 2)", "[p. 2]", "(hlm. 3, 4)": the page references the model writes after a claim.
+    private static readonly Regex PageCitation = new(@"[\(\[](?:p|pp|hlm)\.\s*\d+(?:\s*[,\-\u2013]\s*\d+)*[\)\]]", RegexOptions.Compiled);
+
+    public string FormattedHtml =>
+        PageCitation.Replace(
+            BoldMarkdown.Replace(WebUtility.HtmlEncode(Body), "<strong>$1</strong>"),
+            "<span class=\"rag-cite\">$0</span>");
+
     public bool IsFlagged { get; set; }
     public bool CanFlag => LogId is not null;
 
-    // Set when FlagMessageAsync's try/catch catches a failed /flag call
-    // (network blip, backend down) -- surfaced inline instead of letting
-    // the exception propagate and tear down the whole Blazor circuit.
     public string? FlagError { get; set; }
 }
