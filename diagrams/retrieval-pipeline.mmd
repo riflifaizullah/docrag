@@ -1,0 +1,11 @@
+flowchart LR
+    Q["Question"] --> E["Embed the question"]
+    Q --> K["BM25 keyword search"]
+    E --> V["Vector search<br/>top 100 chunks"]
+    K --> K2["Keyword matches<br/>top 100 chunks"]
+    V --> RRF["Merge with reciprocal<br/>rank fusion"]
+    K2 --> RRF
+    RRF --> RR["Cross-encoder rerank<br/>keep the best 8"]
+    RR --> GATE{"Relevance gate"}
+    GATE -- "pass" --> OUT["Passages sent to the LLM"]
+    GATE -- "fail" --> REF["Refuse, no LLM call"]

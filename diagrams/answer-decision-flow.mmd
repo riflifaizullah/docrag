@@ -1,0 +1,19 @@
+flowchart TD
+    Q["Question arrives<br/>POST /ask"] --> N{"Does it name<br/>a document?"}
+
+    N -- "no" --> W["Search all documents"]
+    W --> A{"Bare identifier shared by<br/>several documents?<br/>e.g. Appendix 1"}
+    A -- "yes" --> C["Ask which document<br/>returns a candidate list"]
+    A -- "no" --> G{"Relevance gate:<br/>similarity or rerank<br/>score high enough?"}
+    G -- "no" --> R["Refuse: not found<br/>no LLM call"]
+    G -- "yes" --> M{"Several documents<br/>compete?"}
+    M -- "yes" --> M2["Answer from the best match<br/>and list the alternatives"]
+    M -- "no" --> LLM
+
+    N -- "yes" --> S["Search only that document"]
+    S --> L{"Listing question?<br/>e.g. list all sections"}
+    L -- "yes" --> D["Deterministic list<br/>no LLM call"]
+    L -- "no" --> LLM["Local LLM answers using<br/>only the retrieved passages"]
+    M2 --> LLM
+
+    LLM --> F["Add notes: unverified section<br/>numbers and the disclaimer"]
