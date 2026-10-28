@@ -54,14 +54,19 @@
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 2h9l5 5v15H6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg>
                             </div>
                             <div class="rag-answer">
-                                <div class="rag-answer-body">@((MarkupString)message.FormattedHtml)</div>
-
-                                @if (message.Notes.Count > 0)
+                                @foreach (var segment in message.Segments)
                                 {
-                                    <div class="rag-notes">
-                                        @foreach (var note in message.Notes)
+                                    <div class="rag-segment">
+                                        <div class="rag-answer-body">@((MarkupString)segment.Html)</div>
+
+                                        @if (segment.Notes.Count > 0)
                                         {
-                                            <div>@note</div>
+                                            <div class="rag-notes">
+                                                @foreach (var note in segment.Notes)
+                                                {
+                                                    <div>@note</div>
+                                                }
+                                            </div>
                                         }
                                     </div>
                                 }
