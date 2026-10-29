@@ -2,22 +2,6 @@
 
 [![CI](https://github.com/riflifaizullah/docrag/actions/workflows/ci.yml/badge.svg)](https://github.com/riflifaizullah/docrag/actions/workflows/ci.yml)
 
-## Demo
-
-The screenshots below use the five fictional English sample documents. The interface is in English, and answers follow the language of the question, so you can ask in Indonesian too.
-
-**Answer with sources**
-
-![Answer with sources](docs/images/answer-with-sources.png)
-
-**A refusal when the documents do not cover the question**
-
-![Refusal](docs/images/refusal.png)
-
-**The document-choice prompt for an ambiguous question**
-
-![Document choice](docs/images/document-choice.png)
-
 A local-first question answering system for PDF documents. Ask a question in plain language and get an answer with the source document and page, or an honest "not found" when the documents do not contain the answer.
 
 Developed from a system I built during an AI engineering internship and rebuilt as a company-neutral, open-source version. It contains no company data, documents, names or branding, and it includes fictional sample documents in English and Indonesian so you can try it right away.
@@ -197,3 +181,19 @@ DocRAG is free to use and change under the MIT license. If you want help connect
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Demo
+
+The screenshots below use the five fictional English sample documents. The interface is in English, and answers follow the language of the question, so you can ask in Indonesian too.
+
+**Answer with sources**
+
+![Answer with sources](docs/images/answer-with-sources.png)
+
+**A refusal when the documents do not cover the question**
+
+![Refusal](docs/images/refusal.png)
+
+**The document-choice prompt for an ambiguous question**
+
+![Document choice](docs/images/document-choice.png)
