@@ -4,9 +4,6 @@
 
 ## Demo
 
-<!-- DEMO VIDEO: drag the MP4 file into this spot in the GitHub web editor to embed it. -->
-Demo video: coming soon.
-
 The screenshots below use the five fictional English sample documents. The interface is in English, and answers follow the language of the question, so you can ask in Indonesian too.
 
 **Answer with sources**
@@ -109,6 +106,32 @@ DocRAG reads PDFs from a folder. It has no built-in connector to a database or d
 5. **Generation.** The local model answers using only the retrieved passages.
 
 More diagrams (sequence of a request, ingestion, data model, module map) and a walkthrough of each are in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## How it was tested
+
+An earlier version of this pipeline was run on a private collection of more than 1,000
+real-world PDF documents (roughly 19,000 pages, mostly Indonesian, mixed layouts).
+That data cannot be shared, so these results cannot be reproduced from this repository.
+They are included only to show how the design behaved at scale.
+
+In the final run, 820 questions were scored as answer-or-refuse decisions: 700 had an
+answer in the documents and 120 were off-topic or made up and should have been refused.
+
+- **Precision 99.2 percent:** of the 617 questions the system answered, 612 should have
+  been answered. This measures whether it answered the right questions, not whether
+  each answer was correct, and the refusal set was easy to spot.
+- **Recall 87.4 percent:** of the 700 answerable questions, 612 were answered. The 88
+  misses were refusals, and most of those were cases where the section had no real text
+  to quote. This number was not recalculated to account for that.
+- **Stability:** all 1,000 questions completed with no runtime errors.
+
+Known limits: the system prefers precision to recall, so it sometimes says "not found"
+when an answer exists. Finding the exact page is its weakest step, and searching across
+many documents for a topic is less precise than asking about one document. Answering is
+slow on a local model.
+
+The English and Indonesian sample documents in this repository are small and are
+the only data this exact code has been checked against.
 
 ## Documentation
 
