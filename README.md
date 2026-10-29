@@ -160,7 +160,7 @@ The website talks to the backend through an `IApiClient` interface, so its chat 
 - The relevance gate was tuned on a larger document set. On a very small set such as the bundled samples, a vaguely worded question can be refused even when the right document ranks first. The thresholds are in `backend/app/config.py`.
 - Heading patterns, question splitting and refusal phrases cover English and Indonesian only. The answer language is guessed from common words, so a very short or mixed-language question falls back to `DOCRAG_LANG`.
 - Retrieval depends on vocabulary. A question that says "hotel" can miss a passage that only says "accommodation", because the reranker scores the two words as unrelated.
-- No public evaluation results are included. The evaluation harness used during development ran on a private document set and is not part of this repository, so this README reports no accuracy numbers.
+- The evaluation harness used during development ran on a private document set and is not part of this repository, so the results in "How it was tested" cannot be reproduced from here.
 - It is not deployed publicly.
 
 ## Security notes
