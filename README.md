@@ -45,6 +45,14 @@ cd dotnet/RagSystemWeb && dotnet run             # 4. start the website, then op
 
 You need Python 3.10+, the .NET 8 SDK and Ollama, and a GPU with about 8 GB of memory is recommended. The full guide, example questions and troubleshooting are in [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md).
 
+Or with Docker, which needs nothing else installed:
+
+```bash
+docker compose up --build                        # then open http://localhost:5080
+```
+
+The first start downloads the language model (about 6 GB) and indexes the English samples. Run it on your own PDFs with `DOCRAG_DOCS=/path/to/pdfs docker compose up --build`. Docker on CPU is slow, see [the guide](docs/GETTING_STARTED.md#run-with-docker).
+
 ## How a question is answered
 
 ![Decision flow](diagrams/answer-decision-flow.png)
@@ -100,6 +108,7 @@ They are included only to show how the design behaved at scale.
 
 In the final run, 820 questions were scored as answer-or-refuse decisions: 700 had an
 answer in the documents and 120 were off-topic or made up and should have been refused.
+The other questions in the run (topic search across documents, listing all items, and bare identifiers that match many documents) were scored with their own measures and are not part of these figures.
 
 - **Precision 99.2 percent:** of the 617 questions the system answered, 612 should have
   been answered. This measures whether it answered the right questions, not whether
