@@ -79,7 +79,7 @@ The interface is in English. Answers follow the language of your question, and t
 
 | Ask | What to expect |
 |---|---|
-| `How many days of annual leave do permanent employees get?` | An answer from the leave policy, with its source |
+| `How many days of annual leave do permanent employees get?` | An answer (12 days) with its source. The employee handbook and the leave policy both cover this, so the other one is offered as an alternative |
 | `What is the daily allowance for domestic business travel?` | An answer from the travel policy |
 | `What does Appendix 1 say?` | A list of all five documents to choose from, because every sample has an "Appendix 1" |
 | `Is there a dress code?` | A refusal: the documents do not cover it |
