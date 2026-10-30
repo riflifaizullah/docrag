@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from datetime import datetime
 from pathlib import Path
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -107,7 +108,8 @@ def start_scheduler() -> BackgroundScheduler:
         return _scheduler
     _scheduler = BackgroundScheduler()
     _scheduler.add_job(
-        _scheduled_sync_once, "interval", minutes=config.SYNC_INTERVAL_MINUTES, id="doc_sync"
+        _scheduled_sync_once, "interval", minutes=config.SYNC_INTERVAL_MINUTES, id="doc_sync",
+        next_run_time=datetime.now(),  # also index once at startup, so a fresh install is ready without a click
     )
     _scheduler.start()
     return _scheduler

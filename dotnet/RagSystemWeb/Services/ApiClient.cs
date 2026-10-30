@@ -7,9 +7,12 @@ namespace RagSystemWeb.Services;
 /// <summary>Thin HTTP client for the FastAPI backend.</summary>
 public sealed class ApiClient : IApiClient
 {
-    // Shared with PreviewPanel.razor so the <iframe>/download link don't
-    // duplicate this literal.
+    // Where the browser reaches the backend (the PDF preview iframe and download link).
     public const string BackendBaseUrl = "http://localhost:8000";
+
+    // Where this server reaches the backend. Docker Compose points it at the backend container.
+    public static readonly string ServerBaseUrl =
+        Environment.GetEnvironmentVariable("DOCRAG_BACKEND_URL") ?? BackendBaseUrl;
 
     private readonly HttpClient _http;
 
@@ -17,7 +20,7 @@ public sealed class ApiClient : IApiClient
     {
         _http = new HttpClient
         {
-            BaseAddress = new Uri(BackendBaseUrl),
+            BaseAddress = new Uri(ServerBaseUrl),
             Timeout = TimeSpan.FromSeconds(450),
         };
     }

@@ -5,7 +5,11 @@ namespace RagSystemWeb.Services;
 /// <summary>Ported from dotnet/RagSystemDesktop/Services/BackendLauncher.cs (the WPF attempt) with the splash-window coupling dropped: Program.cs.</summary>
 public static class BackendLauncher
 {
-    private const string ApiBase = "http://localhost:8000";
+    private static readonly string ApiBase = ApiClient.ServerBaseUrl;
+
+    // With DOCRAG_BACKEND_URL set the backend is someone else's job (a container), so only wait for it.
+    private static readonly bool ExternalBackend =
+        Environment.GetEnvironmentVariable("DOCRAG_BACKEND_URL") is not null;
 
     private static readonly string BackendDir = Path.GetFullPath(
         Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "backend"));
@@ -31,7 +35,7 @@ public static class BackendLauncher
 
         Console.WriteLine("[BackendLauncher] Starting the backend API (can take 30-60 seconds on first start)...");
 
-        if (TryAcquireLock())
+        if (!ExternalBackend && TryAcquireLock())
         {
             try
             {

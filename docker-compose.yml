@@ -1,0 +1,63 @@
+# One command: docker compose up --build
+# Open http://localhost:5080. It indexes the English samples on first start.
+# For your own PDFs: DOCRAG_DOCS=/path/to/pdfs docker compose up --build
+# Ports are published on 127.0.0.1 only, because the backend has no sign-in.
+
+services:
+  ollama:
+    image: ollama/ollama
+    volumes:
+      - ollama:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # Downloads the language model once (about 6 GB) and exits.
+  models:
+    image: ollama/ollama
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["ollama", "pull", "qwen3.5:9b"]
+    restart: "no"
+
+  backend:
+    build: ./backend
+    depends_on:
+      models:
+        condition: service_completed_successfully
+    environment:
+      DOCRAG_OLLAMA_HOST: http://ollama:11434
+      DOCRAG_ALLOWED_HOSTS: localhost,127.0.0.1,backend
+      DOCRAG_LANG: ${DOCRAG_LANG:-en}
+    volumes:
+      - ${DOCRAG_DOCS:-./samples/en}:/data/corpus:ro
+      - docrag-data:/data
+      - hf-cache:/hf
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  website:
+    build: ./dotnet
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      DOCRAG_BACKEND_URL: http://backend:8000
+    ports:
+      - "127.0.0.1:5080:5080"
+
+volumes:
+  ollama:
+  docrag-data:
+  hf-cache:

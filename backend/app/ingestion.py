@@ -167,7 +167,7 @@ def _extract_page_lines(page: "pdfplumber.page.Page") -> list[Line]:
     return lines
 
 
-_OCR_LANG = "ind+eng"  # Indonesian first: the corpus is predominantly Indonesian legal/SOP text
+_OCR_LANG = "ind+eng"  # Indonesian first, then English
 _OCR_DPI = 200
 
 

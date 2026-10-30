@@ -31,3 +31,10 @@ jobs:
       - name: Unit tests
         working-directory: backend
         run: python -m pytest -q
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose config --quiet
+      - run: docker compose build backend website

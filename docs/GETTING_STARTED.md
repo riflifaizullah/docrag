@@ -29,7 +29,7 @@ python scripts/load_samples.py
 
 This copies the five English sample PDFs from `samples/en/` into `backend/data/corpus/` and builds the index. The samples are fictional policy documents for an invented company: an employee handbook, and policies for leave, business travel, information security and procurement. For the Indonesian set run `python scripts/load_samples.py id`. Both sets can live in one index. You can rebuild the PDFs with `python scripts/generate_sample_docs.py [en|id|all]` (needs `pip install -r requirements-dev.txt`).
 
-To use your own documents instead, put PDFs in `backend/data/corpus/` and click the re-index button in the sidebar, or run `cd backend && python -m app.sync_documents`. The button reports how many files were new, updated or removed. The corpus folder is also checked every 15 minutes.
+To use your own documents instead, put PDFs in `backend/data/corpus/` and click the re-index button in the sidebar, or run `cd backend && python -m app.sync_documents`. The button reports how many files were new, updated or removed. The corpus folder is checked when the backend starts and then every 15 minutes.
 
 ## 3. Start the app
 
@@ -51,6 +51,27 @@ Environment variables:
 | `DOCRAG_DATA_DIR` | `backend/data` | Where documents, the index, sessions and logs live. Use different folders to keep several indexes |
 | `DOCRAG_API_HOST` | `127.0.0.1` | Address the backend listens on. It has no sign-in, so keep it local |
 | `DOCRAG_ALLOWED_HOSTS` | `localhost,127.0.0.1` | Host names the backend accepts |
+| `DOCRAG_OLLAMA_HOST` | `http://127.0.0.1:11434` | Where the backend finds Ollama |
+| `DOCRAG_BACKEND_URL` | not set | Website only. If set, the website uses that backend and never starts one |
+
+## Run with Docker
+
+`docker-compose.yml` starts four containers: Ollama, a one-time step that pulls the language model, the backend and the website.
+
+```bash
+docker compose up --build
+```
+
+Then open http://localhost:5080. The first start downloads the language model (about 6 GB) and the embedding and reranker models (about 600 MB), then indexes the English samples, so give it several minutes. Later starts reuse the downloads, which live in Docker volumes.
+
+- **Your own documents:** `DOCRAG_DOCS=/path/to/pdfs docker compose up --build`. The folder is mounted read-only. Add or change a PDF and click the re-index button, or wait for the 15-minute check.
+- **Indonesian default:** `DOCRAG_LANG=id docker compose up --build`.
+- **Ports:** 5080 (website) and 8000 (backend, which the PDF preview uses) are published on `127.0.0.1` only, because the backend has no sign-in. Do not change that to `0.0.0.0` on a shared machine.
+- **Speed:** Ollama runs on the CPU here, so answers can take a minute or more. With an NVIDIA GPU, add a `deploy.resources.reservations.devices` entry to the `ollama` service, see the Docker documentation on GPU support.
+- **The vision model** that describes diagram pages is not pulled. Pages that are mostly diagrams are indexed without a description. Add `qwen2.5vl:7b` to the `models` step if you need it.
+- **Reset everything:** `docker compose down -v` removes the index and the downloaded models.
+
+The Docker setup was written for Docker Compose v2 and is built (but not run end to end) in CI.
 
 ## 4. Things to try
 
