@@ -32,9 +32,32 @@ jobs:
         working-directory: backend
         run: python -m pytest -q
 
-  docker-build:
+  docker-e2e:
+    # Starts the real containers with a tiny model, so the setup is proven (not the answer quality).
     runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      DOCRAG_MODEL: qwen3:0.6b
     steps:
       - uses: actions/checkout@v4
-      - run: docker compose config --quiet
-      - run: docker compose build backend website
+      - run: docker compose up -d --build
+      - name: Backend is healthy and the samples are indexed
+        run: |
+          for i in $(seq 1 90); do
+            n=$(curl -sf http://127.0.0.1:8000/documents | python3 -c "import sys,json; print(len(json.load(sys.stdin)['documents']))" || echo 0)
+            [ "$n" = "5" ] && break
+            sleep 10
+          done
+          echo "indexed documents: $n"
+          [ "$n" = "5" ]
+      - name: Website serves the page
+        run: curl -sf http://127.0.0.1:5080/ | grep -q DocRAG
+      - name: A question gets an answer with its source
+        run: |
+          curl -sf -m 600 -X POST http://127.0.0.1:8000/ask -H 'Content-Type: application/json'             -d '{"question":"How many days of annual leave do permanent employees get?"}' | tee ask.json
+          python3 -c "import json; r=json.load(open('ask.json'))['results'][0]; assert 'Leave_Policy_Sample.pdf' in r['sources'] and r['answer'].strip(), r"
+      - name: Container logs
+        if: failure()
+        run: docker compose logs --no-color --tail 80
+      - run: docker compose down -v
+        if: always()

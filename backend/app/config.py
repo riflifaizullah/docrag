@@ -23,7 +23,7 @@ for _d in (DATA_DIR, CORPUS_DIR, CHROMA_DIR, SQLITE_DIR, SESSION_LOGS_DIR, CHUNK
 EMBEDDING_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
 
 # Local language model served by Ollama. Full-document prompts are long, so they get a longer timeout.
-OLLAMA_MODEL = "qwen3.5:9b"
+OLLAMA_MODEL = os.getenv("DOCRAG_OLLAMA_MODEL", "qwen3.5:9b")
 OLLAMA_HOST = os.getenv("DOCRAG_OLLAMA_HOST", "http://127.0.0.1:11434")
 OLLAMA_TIMEOUT_SECONDS = 180
 OLLAMA_FULL_DOC_TIMEOUT_SECONDS = 420

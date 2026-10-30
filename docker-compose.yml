@@ -22,7 +22,7 @@ services:
         condition: service_healthy
     environment:
       OLLAMA_HOST: http://ollama:11434
-    entrypoint: ["ollama", "pull", "qwen3.5:9b"]
+    entrypoint: ["ollama", "pull", "${DOCRAG_MODEL:-qwen3.5:9b}"]
     restart: "no"
 
   backend:
@@ -32,6 +32,7 @@ services:
         condition: service_completed_successfully
     environment:
       DOCRAG_OLLAMA_HOST: http://ollama:11434
+      DOCRAG_OLLAMA_MODEL: ${DOCRAG_MODEL:-qwen3.5:9b}
       DOCRAG_ALLOWED_HOSTS: localhost,127.0.0.1,backend
       DOCRAG_LANG: ${DOCRAG_LANG:-en}
     volumes:
