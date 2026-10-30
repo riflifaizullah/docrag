@@ -1,0 +1,83 @@
+[
+  {
+    "file": "NIST_CSF_2_0.pdf",
+    "language": "en",
+    "title": "NIST Cybersecurity Framework 2.0",
+    "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+    "license": "US government work",
+    "bytes": 1518858,
+    "sha256": "3c31f46fee98cac0c4323453e5109291a213b4de7fef8c058af9bf67f717433c"
+  },
+  {
+    "file": "NIST_SP_800-61r2_Incident_Handling.pdf",
+    "language": "en",
+    "title": "NIST SP 800-61 Rev. 2, Computer Security Incident Handling Guide",
+    "url": "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-61r2.pdf",
+    "license": "US government work",
+    "bytes": 1744473,
+    "sha256": "b1c5ead0632dcfb979c59d8c462b094ad2465ddaf62d5c246289d6d9b4419df1"
+  },
+  {
+    "file": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+    "language": "en",
+    "title": "NIST SP 800-30 Rev. 1, Guide for Conducting Risk Assessments",
+    "url": "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-30r1.pdf",
+    "license": "US government work",
+    "bytes": 826897,
+    "sha256": "f214087f0bdb35932a28c16eb93932a33c67a6edfb5e6f1638866bd201c98e04"
+  },
+  {
+    "file": "NIST_SP_800-40r4_Patch_Management.pdf",
+    "language": "en",
+    "title": "NIST SP 800-40 Rev. 4, Guide to Enterprise Patch Management Planning",
+    "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-40r4.pdf",
+    "license": "US government work",
+    "bytes": 562944,
+    "sha256": "351f4a828d6c0bc8bf98f25ba3f87ec5add0ed8cf8bb4a6e6cb4e7e4a9731833"
+  },
+  {
+    "file": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+    "language": "en",
+    "title": "NIST SP 800-88 Rev. 1, Guidelines for Media Sanitization",
+    "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-88r1.pdf",
+    "license": "US government work",
+    "bytes": 714563,
+    "sha256": "acd2315cb1823d51db93b180d898fabfdf5e964e3fcb41cf44d14b4c3ec8c5c4"
+  },
+  {
+    "file": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+    "language": "en",
+    "title": "NIST SP 800-34 Rev. 1, Contingency Planning Guide for Federal Information Systems",
+    "url": "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-34r1.pdf",
+    "license": "US government work",
+    "bytes": 952921,
+    "sha256": "476f04d4c60b0770c1ac8b2720551972074ce78e936a3e7a535048416111d0df"
+  },
+  {
+    "file": "NIST_SP_800-63B_Digital_Identity.pdf",
+    "language": "en",
+    "title": "NIST SP 800-63B, Digital Identity Guidelines: Authentication",
+    "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63b.pdf",
+    "license": "US government work",
+    "bytes": 1480377,
+    "sha256": "ccfce7510a1267933f912d023306c6e7d485f21be63d271108b61aad6139127e"
+  },
+  {
+    "file": "UU_27_2022_Pelindungan_Data_Pribadi.pdf",
+    "language": "id",
+    "title": "UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi",
+    "url": "https://jdih.kemenkeu.go.id/download/46c17b53-4a45-411c-9b76-c6799e5769fc/UU_Nomor_27_Tahun_2022%20Perlindungan%20Data%20Pribadi.pdf",
+    "license": "Indonesian law (no copyright, Law 28/2014 Art. 42)",
+    "bytes": 2977828,
+    "sha256": "ed952dea04b87d14ecf037f9f324a65d50b396ddd34fc28ddf9ff014391971f6"
+  },
+  {
+    "file": "UU_13_2003_Ketenagakerjaan.pdf",
+    "language": "id",
+    "title": "UU No. 13 Tahun 2003 tentang Ketenagakerjaan",
+    "url": "https://jdih.kemnaker.go.id/asset/data_puu/2003uu013.pdf",
+    "license": "Indonesian law (no copyright, Law 28/2014 Art. 42)",
+    "bytes": 973567,
+    "sha256": "dcc3a42ed0594497ccdb23b6d1e6d20b252995befc5dca1d503e290250ba0d6f"
+  }
+]

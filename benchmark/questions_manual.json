@@ -1,0 +1,261 @@
+{
+ "answerable": [
+  {
+   "id": "m01",
+   "question": "What is the minimum length of a password that a user picks themselves?",
+   "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+   "groups": [
+    [
+     "at least 8 characters in length if chosen by the subscriber"
+    ]
+   ]
+  },
+  {
+   "id": "m02",
+   "question": "Which actions can be used to sanitize storage media?",
+   "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+   "groups": [
+    [
+     "clear, purge, and destroy are actions that can be taken to sanitize media"
+    ]
+   ]
+  },
+  {
+   "id": "m03",
+   "question": "What counts as a computer security incident?",
+   "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+   "groups": [
+    [
+     "violation or imminent threat of violation of computer security policies"
+    ]
+   ]
+  },
+  {
+   "id": "m04",
+   "question": "What are the steps of the risk assessment process?",
+   "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+   "groups": [
+    [
+     "prepare for the assessment",
+     "conduct the assessment",
+     "communicate assessment results"
+    ]
+   ]
+  },
+  {
+   "id": "m05",
+   "question": "How many steps does the contingency planning process have?",
+   "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+   "groups": [
+    [
+     "seven-step contingency planning process"
+    ],
+    [
+     "the seven steps in the process are"
+    ]
+   ]
+  },
+  {
+   "id": "m06",
+   "question": "Which functions organize the outcomes of the CSF Core?",
+   "document": "NIST_CSF_2_0.pdf",
+   "groups": [
+    [
+     "govern, identify, protect, detect, respond, and recover"
+    ]
+   ]
+  },
+  {
+   "id": "m07",
+   "question": "What does maximum tolerable downtime mean?",
+   "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+   "groups": [
+    [
+     "maximum tolerable downtime (mtd). the mtd represents"
+    ]
+   ]
+  },
+  {
+   "id": "m08",
+   "question": "How long may a system resource stay unavailable, according to the recovery time objective?",
+   "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+   "groups": [
+    [
+     "recovery time objective (rto). rto defines the maximum amount of time"
+    ]
+   ]
+  },
+  {
+   "id": "m09",
+   "question": "Why does patching need automation?",
+   "document": "NIST_SP_800-40r4_Patch_Management.pdf",
+   "groups": [
+    [
+     "automation is also needed for emergency situations"
+    ]
+   ]
+  },
+  {
+   "id": "m10",
+   "question": "What does the second authenticator assurance level provide?",
+   "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+   "groups": [
+    [
+     "aal2 provides high confidence that the claimant controls"
+    ]
+   ]
+  },
+  {
+   "id": "m11",
+   "question": "How is the likelihood of a threat event assessed?",
+   "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+   "groups": [
+    [
+     "assess the likelihood of threat event initiation"
+    ]
+   ]
+  },
+  {
+   "id": "m12",
+   "question": "How can an organization compare where it is with where it wants to be?",
+   "document": "NIST_CSF_2_0.pdf",
+   "groups": [
+    [
+     "creating current and target state organizational profiles helps organizations to compare"
+    ]
+   ]
+  },
+  {
+   "id": "m13",
+   "question": "Berapa jam waktu kerja dalam satu hari untuk enam hari kerja dalam seminggu?",
+   "document": "UU_13_2003_Ketenagakerjaan.pdf",
+   "groups": [
+    [
+     "7 (tujuh) jam 1 (satu) hari dan 40 (empat puluh) jam 1 (satu) minggu untuk 6 (enam) hari kerja"
+    ]
+   ]
+  },
+  {
+   "id": "m14",
+   "question": "Dalam berapa lama pengendali data pribadi harus memperbarui data setelah ada permintaan?",
+   "document": "UU_27_2022_Pelindungan_Data_Pribadi.pdf",
+   "groups": [
+    [
+     "paling lambat 3 x 24 (tiga kali dua puluh empat) jam"
+    ]
+   ]
+  },
+  {
+   "id": "m15",
+   "question": "Apa sanksi pidana bagi orang yang secara melawan hukum menggunakan data pribadi yang bukan miliknya?",
+   "document": "UU_27_2022_Pelindungan_Data_Pribadi.pdf",
+   "groups": [
+    [
+     "bukan miliknya sebagaimana dimaksud dalam pasal 65 ayat (3) dipidana dengan pidana penjara paling lama 5 (lima) tahun"
+    ]
+   ]
+  }
+ ],
+ "should_refuse": [
+  {
+   "id": "r01",
+   "question": "What causes a total solar eclipse?",
+   "kind": "easy"
+  },
+  {
+   "id": "r02",
+   "question": "How do I bake sourdough bread?",
+   "kind": "easy"
+  },
+  {
+   "id": "r03",
+   "question": "Who won the 2018 FIFA World Cup?",
+   "kind": "easy"
+  },
+  {
+   "id": "r04",
+   "question": "What is the capital city of Australia?",
+   "kind": "easy"
+  },
+  {
+   "id": "r05",
+   "question": "How many calories are in a banana?",
+   "kind": "easy"
+  },
+  {
+   "id": "r06",
+   "question": "Which planet has the most moons?",
+   "kind": "easy"
+  },
+  {
+   "id": "r07",
+   "question": "What is the best way to train for a marathon?",
+   "kind": "easy"
+  },
+  {
+   "id": "r08",
+   "question": "How does a refrigerator work?",
+   "kind": "easy"
+  },
+  {
+   "id": "r09",
+   "question": "Who painted the Mona Lisa?",
+   "kind": "easy"
+  },
+  {
+   "id": "r10",
+   "question": "What is the boiling point of water at sea level?",
+   "kind": "easy"
+  },
+  {
+   "id": "r11",
+   "question": "Apa penyebab terjadinya gerhana matahari total?",
+   "kind": "easy"
+  },
+  {
+   "id": "r12",
+   "question": "Bagaimana cara membuat nasi goreng?",
+   "kind": "easy"
+  },
+  {
+   "id": "r13",
+   "question": "Siapa presiden pertama Amerika Serikat?",
+   "kind": "easy"
+  },
+  {
+   "id": "r14",
+   "question": "Berapa jarak dari Jakarta ke Surabaya?",
+   "kind": "easy"
+  },
+  {
+   "id": "r15",
+   "question": "What is the penalty for failing to report a breach under HIPAA?",
+   "kind": "near"
+  },
+  {
+   "id": "r16",
+   "question": "What is the maximum fine under Article 83 of the GDPR?",
+   "kind": "near"
+  },
+  {
+   "id": "r17",
+   "question": "Which encryption algorithm does NIST recommend for TLS 1.3 cipher suites?",
+   "kind": "near"
+  },
+  {
+   "id": "r18",
+   "question": "How much does a SOC 2 audit cost?",
+   "kind": "near"
+  },
+  {
+   "id": "r19",
+   "question": "Berapa denda maksimal pelanggaran data pribadi menurut GDPR?",
+   "kind": "near"
+  },
+  {
+   "id": "r20",
+   "question": "What does ISO 27001 require for supplier agreements?",
+   "kind": "near"
+  }
+ ]
+}

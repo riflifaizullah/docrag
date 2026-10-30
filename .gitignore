@@ -23,3 +23,7 @@ __pycache__/
 # OS noise
 Thumbs.db
 .DS_Store
+
+# Benchmark downloads and indexes
+benchmark/documents/
+benchmark/.work/

@@ -1,0 +1,578 @@
+[
+ {
+  "id": "h001",
+  "question": "What does the document say about Improving Cybersecurity Risk Communication and Integration?",
+  "document": "NIST_CSF_2_0.pdf",
+  "pages": [
+   15,
+   16
+  ]
+ },
+ {
+  "id": "h002",
+  "question": "What does the document say about Improving Risk Management Communication?",
+  "document": "NIST_CSF_2_0.pdf",
+  "pages": [
+   15,
+   16
+  ]
+ },
+ {
+  "id": "h003",
+  "question": "What does the document say about Improving Integration with Other Risk Management Programs?",
+  "document": "NIST_CSF_2_0.pdf",
+  "pages": [
+   16,
+   17
+  ]
+ },
+ {
+  "id": "h004",
+  "question": "What does the document say about Tier Cybersecurity Risk Governance Cybersecurity Risk Management?",
+  "document": "NIST_CSF_2_0.pdf",
+  "pages": [
+   30,
+   31
+  ]
+ },
+ {
+  "id": "h005",
+  "question": "What does the document say about CSF Community Profile?",
+  "document": "NIST_CSF_2_0.pdf",
+  "pages": [
+   31,
+   32
+  ]
+ },
+ {
+  "id": "h006",
+  "question": "What does the document say about CSF Current Profile?",
+  "document": "NIST_CSF_2_0.pdf",
+  "pages": [
+   31,
+   32
+  ]
+ },
+ {
+  "id": "h007",
+  "question": "What does the document say about CSF Implementation Example?",
+  "document": "NIST_CSF_2_0.pdf",
+  "pages": [
+   31,
+   32
+  ]
+ },
+ {
+  "id": "h008",
+  "question": "What does the document say about CSF Informative Reference?",
+  "document": "NIST_CSF_2_0.pdf",
+  "pages": [
+   31,
+   32
+  ]
+ },
+ {
+  "id": "h009",
+  "question": "What does the document say about CSF Organizational Profile?",
+  "document": "NIST_CSF_2_0.pdf",
+  "pages": [
+   31,
+   32
+  ]
+ },
+ {
+  "id": "h010",
+  "question": "What does the document say about CSF Quick Start Guide?",
+  "document": "NIST_CSF_2_0.pdf",
+  "pages": [
+   31,
+   32
+  ]
+ },
+ {
+  "id": "h011",
+  "question": "What does the document say about DEVELOPING COMMON INFORMATION SECURITY FOUNDATIONS?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   6,
+   7
+  ]
+ },
+ {
+  "id": "h012",
+  "question": "What does the document say about CHAPTER TWO THE FUNDAMENTALS?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   13,
+   14
+  ]
+ },
+ {
+  "id": "h013",
+  "question": "What does the document say about Threat Threat Adverse?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   21,
+   22
+  ]
+ },
+ {
+  "id": "h014",
+  "question": "What does the document say about Feedback Loop for - - Organization-Wide ORGANIZATION Continuous Improvement?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   26,
+   27
+  ]
+ },
+ {
+  "id": "h015",
+  "question": "What does the document say about Risk Assessments at the Information System Tier?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   28,
+   29
+  ]
+ },
+ {
+  "id": "h016",
+  "question": "What does the document say about Step 1: Prepare for Assessment?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   32,
+   33
+  ]
+ },
+ {
+  "id": "h017",
+  "question": "What does the document say about Summary of Key Activities – Preparing for Risk Assessments?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   37,
+   38
+  ]
+ },
+ {
+  "id": "h018",
+  "question": "What does the document say about STEP 3: COMMUNICATE AND SHARE RISK ASSESSMENT RESULTS?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   46,
+   47
+  ]
+ },
+ {
+  "id": "h019",
+  "question": "What does the document say about Summary of Key Activities – Maintaining Risk Assessments?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   48,
+   49
+  ]
+ },
+ {
+  "id": "h020",
+  "question": "What does the document say about National Institute of Standards and Technology Special Publication 800-137, Information?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   50,
+   51
+  ]
+ },
+ {
+  "id": "h021",
+  "question": "What does the document say about CONTINGENCY PLANNING GUIDE FOR FEDERAL INFORMATION SYSTEMS Chapter 1. Introduction?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   15,
+   16
+  ]
+ },
+ {
+  "id": "h022",
+  "question": "What does the document say about Disaster Recovery Plan (DRP)?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   24,
+   25
+  ]
+ },
+ {
+  "id": "h023",
+  "question": "What does the document say about Chapter 3. Information System Contingency Planning Process?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   27,
+   28
+  ]
+ },
+ {
+  "id": "h024",
+  "question": "What does the document say about Backup Methods and Offsite Storage?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   35,
+   36
+  ]
+ },
+ {
+  "id": "h025",
+  "question": "What does the document say about Telecommunications Contingency Solutions?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   68,
+   69
+  ]
+ },
+ {
+  "id": "h026",
+  "question": "What does the document say about ICSP Team – Team Members Work?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   83,
+   84
+  ]
+ },
+ {
+  "id": "h027",
+  "question": "What does the document say about Mission/Business Process MTD RTO RPO 12 hours (last?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   121,
+   122
+  ]
+ },
+ {
+  "id": "h028",
+  "question": "What does the document say about CP-1 CONTINGENCY PLANNING POLICY AND PROCEDURES?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   131,
+   132
+  ]
+ },
+ {
+  "id": "h029",
+  "question": "What does the document say about CP-4 CONTINGENCY PLAN TESTING AND EXERCISES?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   133,
+   134
+  ]
+ },
+ {
+  "id": "h030",
+  "question": "What does the document say about CP-8 TELECOMMUNICATIONS SERVICES?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   135,
+   136
+  ]
+ },
+ {
+  "id": "h031",
+  "question": "What does the document say about Risk Response Approaches for Software Vulnerabilities?",
+  "document": "NIST_SP_800-40r4_Patch_Management.pdf",
+  "pages": [
+   10,
+   11
+  ]
+ },
+ {
+  "id": "h032",
+  "question": "What does the document say about Software Vulnerability Management Life Cycle?",
+  "document": "NIST_SP_800-40r4_Patch_Management.pdf",
+  "pages": [
+   11,
+   12
+  ]
+ },
+ {
+  "id": "h033",
+  "question": "What does the document say about • Risk responses, including patching,?",
+  "document": "NIST_SP_800-40r4_Patch_Management.pdf",
+  "pages": [
+   16,
+   17
+  ]
+ },
+ {
+  "id": "h034",
+  "question": "What does the document say about Choose Actionable Enterprise-Level Patching Metrics?",
+  "document": "NIST_SP_800-40r4_Patch_Management.pdf",
+  "pages": [
+   23,
+   24
+  ]
+ },
+ {
+  "id": "h035",
+  "question": "What does the document say about Incident Response Policy, Plan, and Procedure Creation?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   17,
+   18
+  ]
+ },
+ {
+  "id": "h036",
+  "question": "What does the document say about Incident Reporting Organizations?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   21,
+   22
+  ]
+ },
+ {
+  "id": "h037",
+  "question": "What does the document say about Incident Response Personnel?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   26,
+   27
+  ]
+ },
+ {
+  "id": "h038",
+  "question": "What does the document say about  Blank removable media?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   32,
+   33
+  ]
+ },
+ {
+  "id": "h039",
+  "question": "What does the document say about Publicly Available Information?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   38,
+   39
+  ]
+ },
+ {
+  "id": "h040",
+  "question": "What does the document say about Incident Handling Checklist?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   52,
+   53
+  ]
+ },
+ {
+  "id": "h041",
+  "question": "What does the document say about Sharing Agreements and Reporting Requirements?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   57,
+   58
+  ]
+ },
+ {
+  "id": "h042",
+  "question": "What does the document say about Granular Information Sharing?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   59,
+   60
+  ]
+ },
+ {
+  "id": "h043",
+  "question": "What does the document say about Scenario 3: Stolen Documents?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   64,
+   65
+  ]
+ },
+ {
+  "id": "h044",
+  "question": "What does the document say about Scenario 5: Unknown Exfiltration?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   65,
+   66
+  ]
+ },
+ {
+  "id": "h045",
+  "question": "What does the document say about Requirements Notation and Conventions?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   6,
+   7
+  ]
+ },
+ {
+  "id": "h046",
+  "question": "What does the document say about Authenticator Assurance Level 1?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   16,
+   17
+  ]
+ },
+ {
+  "id": "h047",
+  "question": "What does the document say about Requirements by Authenticator Type 5.1.1 Memorized Secrets?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   24,
+   25
+  ]
+ },
+ {
+  "id": "h048",
+  "question": "What does the document say about Single-Factor OTP Device?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   30,
+   31
+  ]
+ },
+ {
+  "id": "h049",
+  "question": "What does the document say about Multi-Factor OTP Verifiers?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   32,
+   33
+  ]
+ },
+ {
+  "id": "h050",
+  "question": "What does the document say about Single-Factor Cryptographic Device Authenticators?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   34,
+   35
+  ]
+ },
+ {
+  "id": "h051",
+  "question": "What does the document say about Multi-Factor Cryptographic Devices?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   35,
+   36
+  ]
+ },
+ {
+  "id": "h052",
+  "question": "What does the document say about Verifier Impersonation Resistance?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   39,
+   40
+  ]
+ },
+ {
+  "id": "h053",
+  "question": "What does the document say about Threat Mitigation Strategies?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   56,
+   57
+  ]
+ },
+ {
+  "id": "h054",
+  "question": "What does the document say about Memorized Secrets Typical Usage?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   64,
+   65
+  ]
+ },
+ {
+  "id": "h055",
+  "question": "What does the document say about When Not To Use CE To Purge Media?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   19,
+   20
+  ]
+ },
+ {
+  "id": "h056",
+  "question": "What does the document say about Factors Influencing Sanitization and Disposal Decisions?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   20,
+   21
+  ]
+ },
+ {
+  "id": "h057",
+  "question": "What does the document say about Senior Agency Information Security Officer (SAISO)?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   24,
+   25
+  ]
+ },
+ {
+  "id": "h058",
+  "question": "What does the document say about Property Management Officer?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   24,
+   25
+  ]
+ },
+ {
+  "id": "h059",
+  "question": "What does the document say about Information Sanitization and Disposition Decision Making?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   25,
+   26
+  ]
+ },
+ {
+  "id": "h060",
+  "question": "What does the document say about Blackberry (back up data on device before sanitization)?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   37,
+   38
+  ]
+ },
+ {
+  "id": "h061",
+  "question": "What does the document say about Reel and Cassette Format Magnetic Tapes?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   41,
+   42
+  ]
+ },
+ {
+  "id": "h062",
+  "question": "What does the document say about NVM Express SSDs?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   47,
+   48
+  ]
+ },
+ {
+  "id": "h063",
+  "question": "What does the document say about Notes: None. Electronically Erasable PROM (EEPROM)?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   49,
+   50
+  ]
+ },
+ {
+  "id": "h064",
+  "question": "What does the document say about C.2 Open Source Tools?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   55,
+   56
+  ]
+ }
+]

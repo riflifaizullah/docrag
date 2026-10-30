@@ -101,6 +101,10 @@ More diagrams (sequence of a request, ingestion, data model, module map) and a w
 
 ## How it was tested
 
+**Public benchmark.** [benchmark/](benchmark/README.md) holds a test anyone can rerun: 9 public documents (NIST guides and two Indonesian laws), 79 questions with known pages and 20 questions that should be refused. It measures retrieval and the relevance gate, not the answers a language model writes. In it, the right page was among the top 8 passages for 99 percent of the answerable questions, against 73 percent for vector search alone, and all 14 off-topic questions were refused. But 4 of the 6 near-miss questions (a related topic the documents do not cover) passed the relevance gate, so refusing those is left to the model. The sample is small, so read the [limits](benchmark/README.md#what-this-does-not-show) before the numbers.
+
+**Earlier private run.**
+
 An earlier version of this pipeline was run on a private collection of more than 1,000
 real-world PDF documents (roughly 19,000 pages, mostly Indonesian, mixed layouts).
 That data cannot be shared, so these results cannot be reproduced from this repository.
@@ -169,7 +173,7 @@ The website talks to the backend through an `IApiClient` interface, so its chat 
 - The relevance gate was tuned on a larger document set. On a very small set such as the bundled samples, a vaguely worded question can be refused even when the right document ranks first. The thresholds are in `backend/app/config.py`.
 - Heading patterns, question splitting and refusal phrases cover English and Indonesian only. The answer language is guessed from common words, so a very short or mixed-language question falls back to `DOCRAG_LANG`.
 - Retrieval depends on vocabulary. A question that says "hotel" can miss a passage that only says "accommodation", because the reranker scores the two words as unrelated.
-- The evaluation harness used during development ran on a private document set and is not part of this repository, so the results in "How it was tested" cannot be reproduced from here.
+- The evaluation harness used during development ran on a private document set and is not part of this repository, so the earlier private-run results in "How it was tested" cannot be reproduced from here. The public benchmark can.
 - It is not deployed publicly.
 
 ## Security notes

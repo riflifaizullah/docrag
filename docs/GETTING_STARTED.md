@@ -52,6 +52,9 @@ Environment variables:
 | `DOCRAG_API_HOST` | `127.0.0.1` | Address the backend listens on. It has no sign-in, so keep it local |
 | `DOCRAG_ALLOWED_HOSTS` | `localhost,127.0.0.1` | Host names the backend accepts |
 | `DOCRAG_OLLAMA_HOST` | `http://127.0.0.1:11434` | Where the backend finds Ollama |
+| `DOCRAG_OLLAMA_MODEL` | `qwen3.5:9b` | Language model the backend asks Ollama for |
+| `DOCRAG_VLM` | `1` | Set to `0` to skip the vision model that describes diagram pages |
+| `DOCRAG_CHUNK_SIZE` | `1000` | Characters per passage when indexing (the overlap is 15 percent of it). Re-index after changing it |
 | `DOCRAG_BACKEND_URL` | not set | Website only. If set, the website uses that backend and never starts one |
 
 ## Run with Docker

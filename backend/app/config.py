@@ -29,7 +29,7 @@ OLLAMA_TIMEOUT_SECONDS = 180
 OLLAMA_FULL_DOC_TIMEOUT_SECONDS = 420
 
 # Optional vision model that describes pages that are mostly diagrams.
-VLM_ENABLED = True
+VLM_ENABLED = os.getenv("DOCRAG_VLM", "1") != "0"  # DOCRAG_VLM=0 skips the diagram descriptions
 VLM_MODEL = "qwen2.5vl:7b"
 VLM_TIMEOUT_SECONDS = 300  # vision inference is slower than text-only generation
 VLM_CONTEXT_TOKENS = 8192
@@ -41,8 +41,8 @@ OCR_ORIENTATION_MIN_CONFIDENCE = 2.0
 
 # Passages sent to the language model, and the chunk size used at ingestion.
 TOP_K = 8
-CHUNK_SIZE_CHARS = 1000
-CHUNK_OVERLAP_CHARS = 150
+CHUNK_SIZE_CHARS = int(os.getenv("DOCRAG_CHUNK_SIZE", "1000"))  # the benchmark overrides it to compare sizes
+CHUNK_OVERLAP_CHARS = round(CHUNK_SIZE_CHARS * 0.15)
 
 # Cross-encoder reranker: reorders RERANK_CANDIDATE_K candidates and keeps TOP_K.
 RERANK_ENABLED = True

@@ -1,0 +1,2958 @@
+[
+ {
+  "variant": "full (default)",
+  "rows": {
+   "heading": [
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    }
+   ],
+   "hand-written": [
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    }
+   ]
+  },
+  "tp": 79,
+  "fn": 0,
+  "fp": 4,
+  "tn": 16,
+  "answered_by_mistake": [
+   "r15",
+   "r16",
+   "r17",
+   "r19"
+  ]
+ },
+ {
+  "variant": "no keyword search",
+  "rows": {
+   "heading": [
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": false,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    }
+   ],
+   "hand-written": [
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    }
+   ]
+  },
+  "tp": 78,
+  "fn": 1,
+  "fp": 4,
+  "tn": 16,
+  "answered_by_mistake": [
+   "r15",
+   "r16",
+   "r17",
+   "r19"
+  ]
+ },
+ {
+  "variant": "no reranker",
+  "rows": {
+   "heading": [
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": false,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    }
+   ],
+   "hand-written": [
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    }
+   ]
+  },
+  "tp": 75,
+  "fn": 4,
+  "fp": 3,
+  "tn": 17,
+  "answered_by_mistake": [
+   "r16",
+   "r17",
+   "r19"
+  ]
+ },
+ {
+  "variant": "vector search only",
+  "rows": {
+   "heading": [
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": false,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    }
+   ],
+   "hand-written": [
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    }
+   ]
+  },
+  "tp": 74,
+  "fn": 5,
+  "fp": 3,
+  "tn": 17,
+  "answered_by_mistake": [
+   "r16",
+   "r17",
+   "r19"
+  ]
+ },
+ {
+  "variant": "chunks of 500 characters",
+  "rows": {
+   "heading": [
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    }
+   ],
+   "hand-written": [
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    }
+   ]
+  },
+  "tp": 79,
+  "fn": 0,
+  "fp": 4,
+  "tn": 16,
+  "answered_by_mistake": [
+   "r15",
+   "r16",
+   "r17",
+   "r19"
+  ]
+ },
+ {
+  "variant": "chunks of 2000 characters",
+  "rows": {
+   "heading": [
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": false,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    }
+   ],
+   "hand-written": [
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": false
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": false,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    },
+    {
+     "doc_top1": true,
+     "doc_hit": true,
+     "page_top1": true,
+     "page_hit": true
+    }
+   ]
+  },
+  "tp": 79,
+  "fn": 0,
+  "fp": 4,
+  "tn": 16,
+  "answered_by_mistake": [
+   "r15",
+   "r16",
+   "r17",
+   "r19"
+  ]
+ }
+]

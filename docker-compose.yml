@@ -33,6 +33,7 @@ services:
     environment:
       DOCRAG_OLLAMA_HOST: http://ollama:11434
       DOCRAG_OLLAMA_MODEL: ${DOCRAG_MODEL:-qwen3.5:9b}
+      DOCRAG_VLM: "0"  # the vision model is not pulled
       DOCRAG_ALLOWED_HOSTS: localhost,127.0.0.1,backend
       DOCRAG_LANG: ${DOCRAG_LANG:-en}
     volumes:
