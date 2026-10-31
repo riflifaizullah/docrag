@@ -137,6 +137,7 @@ the only data this exact code has been checked against.
 | [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) | Setup, sample documents, example questions, troubleshooting |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | All diagrams explained, module map, settings, trade-offs |
 | [docs/API.md](docs/API.md) | Endpoints with request and response shapes |
+| [docs/EVALUATION.md](docs/EVALUATION.md) | Every measurement in one place: results, what they mean, what they do not show |
 
 ## Tech stack
 
