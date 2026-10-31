@@ -32,6 +32,16 @@ jobs:
         working-directory: backend
         run: python -m pytest -q
 
+  mcp-server:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - run: pip install -r mcp_server/requirements.txt
+      - run: python mcp_server/smoke_test.py
+
   docker-e2e:
     # Starts the real containers with a tiny model, so the setup is proven (not the answer quality).
     runs-on: ubuntu-latest

@@ -1,5 +1,5 @@
 """FastAPI app: /ask (single- and multi-question), /sync, /health,
-/documents (listing, preview, download), /monitor (status page)."""
+/search (passages only, no language model), /documents (listing, preview, download), /monitor (status page)."""
 from __future__ import annotations
 
 import base64
@@ -99,6 +99,40 @@ def ask(req: AskRequest):
         refused=any(r.refused for r in results),
         needs_clarification=any(r.needs_clarification for r in results),
         candidate_documents=[c for r in results for c in r.candidate_documents],
+    )
+
+
+class SearchRequest(BaseModel):
+    question: str = Field(min_length=1, max_length=4000)
+    limit: int = Field(default=5, ge=1, le=20)
+
+
+class SearchHit(BaseModel):
+    source: str
+    page: Optional[int] = None
+    text: str
+    score: float
+    rerank_score: Optional[float] = None
+
+
+class SearchResponse(BaseModel):
+    hits: list[SearchHit]
+    would_answer: bool = Field(description="Whether the relevance gate would let this question reach the language model.")
+
+
+@app.post("/search", response_model=SearchResponse)
+def search(req: SearchRequest):
+    """The best passages for a question with their sources and pages. No language model is called."""
+    hits = retrieval.run_on_chroma_thread(retrieval.retrieve, req.question, None, req.limit)
+    return SearchResponse(
+        hits=[
+            SearchHit(
+                source=h["source"], page=h["page"], text=h["text"][:PREVIEW_TEXT_CHARS],
+                score=round(h["score"], 4), rerank_score=round(h["rerank_score"], 4) if "rerank_score" in h else None,
+            )
+            for h in hits
+        ],
+        would_answer=generation.passes_relevance_gate(hits, req.question),
     )
 
 

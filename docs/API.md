@@ -59,6 +59,7 @@ Response shape:
 | `GET /documents/{file}/download` | The PDF itself |
 | `GET /documents/{file}/preview` | Page count, a text snippet of the first page, and a thumbnail (only when Poppler is installed) |
 | `GET /documents/{file}/chunks` | The chunks stored for a document, for debugging |
+| `POST /search` | The best passages for a question, no language model. Body: `question` and optional `limit` (1 to 20, default 5). Returns `hits` (each with `source`, `page`, `text` cut to 800 characters, `score` and `rerank_score`) and `would_answer`, whether the relevance gate would let the question reach the language model. Used by the [MCP server](MCP.md) |
 | `POST /sync` | Pick up new, changed and deleted files in the corpus folder. Returns `new`, `updated`, `unchanged` and `deleted` lists |
 | `POST /sessions` | Create a chat session |
 | `GET /sessions` | List sessions, newest first |

@@ -264,7 +264,7 @@ def looks_like_hedging(answer: str) -> bool:
     return any(phrase in lower for phrase in lang.get().HEDGING_PHRASES)
 
 
-def _passes_relevance_gate(hits: list[dict], question: Optional[str] = None) -> bool:
+def passes_relevance_gate(hits: list[dict], question: Optional[str] = None) -> bool:
     if not hits:
         return False
     max_raw = max(h["score"] for h in hits)
@@ -277,6 +277,9 @@ def _passes_relevance_gate(hits: list[dict], question: Optional[str] = None) -> 
     if question and rerank_scores and max_rerank < config.UNKNOWN_TERM_RERANK_MIN and retrieval.unknown_terms(question):
         return False
     return True
+
+
+_passes_relevance_gate = passes_relevance_gate  # the older private name is still used by tests and the benchmark
 
 
 def generate_answer(
