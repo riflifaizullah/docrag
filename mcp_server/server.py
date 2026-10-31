@@ -43,9 +43,9 @@ def shows_backend_errors(fn):
 
 @server.tool(annotations=READ_ONLY)
 @shows_backend_errors
-def list_documents() -> list[dict]:
+def list_documents() -> dict:
     """List the indexed documents with their type, page count and size."""
-    return tools.list_documents()
+    return {"documents": tools.list_documents()}
 
 
 @server.tool(annotations=READ_ONLY)
@@ -53,8 +53,9 @@ def list_documents() -> list[dict]:
 def search_passages(question: str, limit: int = 5) -> dict:
     """Find the passages that best match a question, with document and page for each. Fast, no language model.
 
-    The result also says whether DocRAG would try to answer this question (`would_answer`), which is false when
-    nothing relevant was found.
+    The passages are always returned. `would_answer` says whether the best one is strong enough for DocRAG to try a
+    written answer. It can be false for a loosely worded question even when the right passage is on top, so read the
+    passages before concluding that the documents do not cover it.
     """
     return tools.search_passages(question, limit)
 

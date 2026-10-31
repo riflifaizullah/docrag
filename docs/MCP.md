@@ -7,7 +7,7 @@ DocRAG can run as an [MCP](https://modelcontextprotocol.io) server, so an AI ass
 | Tool | What it does | Changes anything? |
 |---|---|---|
 | `list_documents` | The indexed documents with type, page count and size | No |
-| `search_passages` | The best matching passages with document and page, and whether DocRAG would try to answer (`would_answer`). No language model, so it is fast | No |
+| `search_passages` | The best matching passages with document and page, and `would_answer`, whether the best passage is strong enough for DocRAG to try a written answer. The passages are always returned, and `would_answer` can be false for a loosely worded question even when the right passage is first. No language model, so it is fast | No |
 | `ask_documents` | A written answer grounded in the documents, with sources. It refuses when the documents do not cover the question, and may ask which document is meant. Slow on a CPU | No |
 | `reindex_documents` | Reads the documents folder again and indexes new and changed files | Yes, the index |
 
