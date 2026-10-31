@@ -137,6 +137,7 @@ the only data this exact code has been checked against.
 | [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) | Setup, sample documents, example questions, troubleshooting |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | All diagrams explained, module map, settings, trade-offs |
 | [docs/API.md](docs/API.md) | Endpoints with request and response shapes |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | A read-only demo mode for a public address, and how to publish the images |
 | [docs/AGENT.md](docs/AGENT.md) | A tool-calling agent that searches several documents and combines the results |
 | [docs/MCP.md](docs/MCP.md) | Use DocRAG as tools from an AI assistant such as Claude Desktop (MCP server) |
 | [docs/EVALUATION.md](docs/EVALUATION.md) | Every measurement in one place: results, what they mean, what they do not show |

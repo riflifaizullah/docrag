@@ -108,6 +108,10 @@ if _override:
 else:
     INGEST_PARALLEL_WORKERS = max(1, min((os.cpu_count() or 4) - 1, _ram_worker_cap))
 
+# Demo mode: read-only, no language model, rate limited. For a public address with sample documents only.
+DEMO_MODE = os.getenv("DOCRAG_DEMO", "0") == "1"
+DEMO_QUESTIONS_PER_MINUTE = 30
+
 # The API has no sign-in, so it listens on this machine only unless DOCRAG_API_HOST says otherwise.
 API_HOST = os.getenv("DOCRAG_API_HOST", "127.0.0.1")
 API_PORT = 8000

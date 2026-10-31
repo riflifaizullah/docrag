@@ -10,12 +10,12 @@ from typing import Optional
 
 import pdfplumber
 import requests
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel, Field
 
-from app import config, database, generation, lang, retrieval, sync_documents
+from app import config, database, demo, generation, lang, retrieval, sync_documents
 from app.lang import ui
 
 app = FastAPI(title="DocRAG API")
@@ -77,17 +77,20 @@ def ui_strings():
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "model": config.OLLAMA_MODEL}
+    return {"status": "ok", "model": config.OLLAMA_MODEL, "demo": config.DEMO_MODE}
 
 
-@app.post("/ask", response_model=AskResponse)
+@app.post("/ask", response_model=AskResponse, dependencies=[Depends(demo.check_rate_limit)])
 def ask(req: AskRequest):
     session_id = req.session_id or database.create_session()
     database.save_message(session_id, "user", req.question)
 
-    sub_results = retrieval.run_on_chroma_thread(
-        generation.generate_multi_answer, req.question, session_id=session_id
-    )
+    if config.DEMO_MODE:
+        sub_results = [retrieval.run_on_chroma_thread(demo.passages_answer, req.question)]
+    else:
+        sub_results = retrieval.run_on_chroma_thread(
+            generation.generate_multi_answer, req.question, session_id=session_id
+        )
     results = [QuestionAnswer(**r) for r in sub_results]
 
     combined_answer = "\n\n".join(r.answer for r in results)
@@ -120,7 +123,7 @@ class SearchResponse(BaseModel):
     would_answer: bool = Field(description="Whether the relevance gate would let this question reach the language model.")
 
 
-@app.post("/search", response_model=SearchResponse)
+@app.post("/search", response_model=SearchResponse, dependencies=[Depends(demo.check_rate_limit)])
 def search(req: SearchRequest):
     """The best passages for a question with their sources and pages. No language model is called."""
     hits = retrieval.run_on_chroma_thread(retrieval.retrieve, req.question, None, req.limit)
@@ -136,7 +139,7 @@ def search(req: SearchRequest):
     )
 
 
-@app.post("/sync")
+@app.post("/sync", dependencies=[Depends(demo.require_writable)])
 def sync():
     return retrieval.run_on_chroma_thread(sync_documents.sync_once)
 
@@ -215,7 +218,7 @@ def document_preview(filename: str):
     }
 
 
-@app.get("/documents/{filename}/chunks")
+@app.get("/documents/{filename}/chunks", dependencies=[Depends(demo.require_writable)])
 def document_chunks(filename: str):
     """Live view of exactly what's currently indexed for this document --
     reads straight from Chroma on every call, so it always reflects the
@@ -255,7 +258,7 @@ def document_download(filename: str):
     )
 
 
-@app.post("/flag/{log_id}")
+@app.post("/flag/{log_id}", dependencies=[Depends(demo.require_writable)])
 def flag(log_id: int, category: str, corrected_answer: Optional[str] = None):
     if category not in database.FLAG_CATEGORIES:
         raise HTTPException(
@@ -266,7 +269,7 @@ def flag(log_id: int, category: str, corrected_answer: Optional[str] = None):
     return {"status": "flagged"}
 
 
-@app.get("/export_flags")
+@app.get("/export_flags", dependencies=[Depends(demo.require_writable)])
 def export_flags():
     return {"flags": database.export_flagged_answers()}
 
@@ -302,7 +305,7 @@ def _check_ollama() -> dict:
         return {"online": False, "response_ms": None}
 
 
-@app.get("/monitor/status")
+@app.get("/monitor/status", dependencies=[Depends(demo.require_writable)])
 def monitor_status():
     return {
         "fastapi": {"online": True, "response_ms": 0},
@@ -387,6 +390,6 @@ setInterval(poll, 5000);
 </html>"""
 
 
-@app.get("/monitor", response_class=HTMLResponse)
+@app.get("/monitor", response_class=HTMLResponse, dependencies=[Depends(demo.require_writable)])
 def monitor_page():
     return _MONITOR_PAGE

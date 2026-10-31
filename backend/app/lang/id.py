@@ -35,6 +35,7 @@ NO_CONTEXT = "(tidak ada konteks yang relevan)"
 
 # Messages shown to the user.
 NOT_FOUND = "Maaf, informasi tersebut tidak ditemukan dalam dokumen yang tersedia."
+DEMO_ANSWER_INTRO = "Mode demo: tidak ada model bahasa di sini. Kutipan yang paling sesuai adalah:"
 CLARIFY = (
     "Pertanyaan Anda merujuk pada identifikasi yang ditemukan di beberapa dokumen: {candidates}. "
     "Mohon sebutkan dokumen yang dimaksud."

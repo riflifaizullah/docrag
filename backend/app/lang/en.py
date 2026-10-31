@@ -32,6 +32,7 @@ ANSWER_LABEL = "ANSWER"
 NO_CONTEXT = "(no relevant context)"
 
 NOT_FOUND = "Sorry, that information was not found in the available documents."
+DEMO_ANSWER_INTRO = "Demo mode: no language model is used here. The best matching passages are:"
 CLARIFY = (
     "Your question refers to an identifier found in several documents: {candidates}. "
     "Please say which document you mean."

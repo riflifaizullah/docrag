@@ -71,3 +71,37 @@ jobs:
         run: docker compose logs --no-color --tail 80
       - run: docker compose down -v
         if: always()
+
+  demo-e2e:
+    # The read-only demo: no language model, passages only, changing endpoints blocked.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose -f docker-compose.demo.yml up -d --build
+      - name: Samples are indexed
+        run: |
+          for i in $(seq 1 90); do
+            n=$(curl -sf http://127.0.0.1:8000/documents | python3 -c "import sys,json; print(len(json.load(sys.stdin)['documents']))" || echo 0)
+            [ "$n" = "5" ] && break
+            sleep 10
+          done
+          [ "$n" = "5" ]
+      - name: A question returns passages with a source, with no language model
+        run: |
+          curl -sf -X POST http://127.0.0.1:8000/ask -H 'Content-Type: application/json'             -d '{"question":"How long must a password be?"}' | tee ask.json
+          python3 -c "import json; r=json.load(open('ask.json'))['results'][0]; assert r['answered'] and r['sources'] and 'Demo mode' in r['answer'], r"
+      - name: A question outside the documents is refused
+        run: |
+          curl -sf -X POST http://127.0.0.1:8000/ask -H 'Content-Type: application/json'             -d '{"question":"How does Kerberos authentication work?"}' | python3 -c "import sys,json; r=json.load(sys.stdin)['results'][0]; assert r['refused'], r"
+      - name: Changing endpoints are blocked
+        run: |
+          test "$(curl -s -o /dev/null -w '%{http_code}' -X POST http://127.0.0.1:8000/sync)" = "403"
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000/monitor)" = "403"
+      - name: Website serves the page
+        run: curl -sf http://127.0.0.1:5080/ | grep -q DocRAG
+      - name: Container logs
+        if: failure()
+        run: docker compose -f docker-compose.demo.yml logs --no-color --tail 80
+      - run: docker compose -f docker-compose.demo.yml down -v
+        if: always()

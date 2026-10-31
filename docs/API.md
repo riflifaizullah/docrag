@@ -52,7 +52,7 @@ Response shape:
 
 | Endpoint | Purpose |
 |---|---|
-| `GET /health` | `{"status": "ok", "model": "..."}` |
+| `GET /health` | `{"status": "ok", "model": "...", "demo": false}` |
 | `GET /ui` | `{"language": "en", "strings": {...}}`, the website's interface text |
 | `GET /sources` | `{"sources": [...]}`, the names of indexed documents |
 | `GET /documents` | Documents with page count, size and type label |

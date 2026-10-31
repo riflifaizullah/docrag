@@ -1,0 +1,43 @@
+name: Publish images
+
+# Runs only when a version tag such as v1.0.0 is pushed, never on an ordinary push.
+# It builds the backend and website images and publishes them to GitHub's container registry (ghcr.io),
+# so a host can pull them: ghcr.io/<owner>/docrag-backend and ghcr.io/<owner>/docrag-website.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: docrag-backend
+            context: ./backend
+          - name: docrag-website
+            context: ./dotnet
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=raw,value=latest
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

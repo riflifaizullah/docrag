@@ -1,0 +1,40 @@
+# A read-only demo: no language model, no Ollama, no way to change anything, questions rate limited.
+# It returns the best matching passages with their documents and pages.
+#
+#   docker compose -f docker-compose.demo.yml up --build        then open http://localhost:5080
+#
+# Use it only with public documents, because the backend has no sign-in. See docs/DEPLOY.md before exposing it.
+
+services:
+  backend:
+    build: ./backend
+    environment:
+      DOCRAG_DEMO: "1"
+      DOCRAG_VLM: "0"
+      DOCRAG_ALLOWED_HOSTS: localhost,127.0.0.1,backend${DOCRAG_PUBLIC_HOST:+,${DOCRAG_PUBLIC_HOST}}
+    volumes:
+      - ${DOCRAG_DOCS:-./samples/en}:/data/corpus:ro
+      - docrag-demo-data:/data
+      - hf-cache:/hf
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  website:
+    build: ./dotnet
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      DOCRAG_BACKEND_URL: http://backend:8000
+    ports:
+      - "127.0.0.1:5080:5080"
+
+volumes:
+  docrag-demo-data:
+  hf-cache:
