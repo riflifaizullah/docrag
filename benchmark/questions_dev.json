@@ -1,0 +1,307 @@
+{
+ "note": "Used to choose settings for the relevance gate. Kept apart from questions_manual.json and questions_headings.json, which stay the untouched test set.",
+ "answerable": [
+  {
+   "id": "d01",
+   "question": "How long must a randomly generated memorized secret from the verifier be?",
+   "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+   "groups": [
+    [
+     "chosen randomly by the csp or verifier shall be at least 6 characters in length"
+    ]
+   ]
+  },
+  {
+   "id": "d02",
+   "question": "Should users be allowed to paste a password into the entry field?",
+   "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+   "groups": [
+    [
+     "functionality when entering a memorized secret"
+    ]
+   ]
+  },
+  {
+   "id": "d03",
+   "question": "What is cryptographic erase?",
+   "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+   "groups": [
+    [
+     "leverages the encryption of target data"
+    ]
+   ]
+  },
+  {
+   "id": "d04",
+   "question": "Which factors decide how incidents are prioritized?",
+   "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+   "groups": [
+    [
+     "incidents should be prioritized based on the relevant factors, such as the functional impact of the incident"
+    ]
+   ]
+  },
+  {
+   "id": "d05",
+   "question": "What is the purpose of a business impact analysis?",
+   "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+   "groups": [
+    [
+     "the purpose of the bia is to identify and prioritize system components"
+    ]
+   ]
+  },
+  {
+   "id": "d06",
+   "question": "What does routine patching mean?",
+   "document": "NIST_SP_800-40r4_Patch_Management.pdf",
+   "groups": [
+    [
+     "routine patching. this is the standard procedure for patches that are on a regular release cycle"
+    ]
+   ]
+  },
+  {
+   "id": "d07",
+   "question": "What is the likelihood of occurrence for adversarial threats based on?",
+   "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+   "groups": [
+    [
+     "for adversarial threats, an assessment of likelihood of occurrence is typically based on"
+    ]
+   ]
+  },
+  {
+   "id": "d08",
+   "question": "What are the levels the CSF uses to describe how well risk is managed?",
+   "document": "NIST_CSF_2_0.pdf",
+   "groups": [
+    [
+     "partial (tier 1), risk informed (tier 2), repeatable (tier 3), and adaptive (tier 4)"
+    ]
+   ]
+  },
+  {
+   "id": "d09",
+   "question": "Why is degaussing no longer useful for flash memory?",
+   "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+   "groups": [
+    [
+     "no longer applies in most cases for flash memory"
+    ]
+   ]
+  },
+  {
+   "id": "d10",
+   "question": "What equipment helps preserve evidence during an incident?",
+   "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+   "groups": [
+    [
+     "chain of custody forms, evidence storage bags and tags"
+    ]
+   ]
+  },
+  {
+   "id": "d11",
+   "question": "Berapa lama maksimal masa percobaan kerja untuk perjanjian kerja waktu tidak tertentu?",
+   "document": "UU_13_2003_Ketenagakerjaan.pdf",
+   "groups": [
+    [
+     "dapat mensyaratkan masa percobaan kerja paling lama 3 (tiga) bulan"
+    ]
+   ]
+  },
+  {
+   "id": "d12",
+   "question": "Bolehkah perjanjian kerja waktu tertentu mensyaratkan masa percobaan?",
+   "document": "UU_13_2003_Ketenagakerjaan.pdf",
+   "groups": [
+    [
+     "perjanjian kerja untuk waktu tertentu tidak dapat mensyaratkan adanya masa percobaan kerja"
+    ]
+   ]
+  },
+  {
+   "id": "d13",
+   "question": "Apa hak subjek data pribadi terkait akses terhadap datanya?",
+   "document": "UU_27_2022_Pelindungan_Data_Pribadi.pdf",
+   "groups": [
+    [
+     "berhak mendapatkan akses dan memperoleh salinan data pribadi tentang dirinya"
+    ]
+   ]
+  },
+  {
+   "id": "d14",
+   "question": "Informasi apa yang berhak diperoleh subjek data pribadi sebelum datanya diproses?",
+   "document": "UU_27_2022_Pelindungan_Data_Pribadi.pdf",
+   "groups": [
+    [
+     "berhak mendapatkan informasi tentang kejelasan identitas"
+    ]
+   ]
+  },
+  {
+   "id": "d15",
+   "question": "Why should password managers be supported when users sign in?",
+   "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+   "groups": [
+    [
+     "this facilitates the use of password managers"
+    ]
+   ]
+  }
+ ],
+ "should_refuse": [
+  {
+   "id": "e01",
+   "question": "What does the CCPA say about consumer opt-out rights?",
+   "kind": "near"
+  },
+  {
+   "id": "e02",
+   "question": "What are the PCI DSS requirements for storing card numbers?",
+   "kind": "near"
+  },
+  {
+   "id": "e03",
+   "question": "How long must records be kept under the Sarbanes-Oxley Act?",
+   "kind": "near"
+  },
+  {
+   "id": "e04",
+   "question": "What are the requirements of ISO 22301 for business continuity audits?",
+   "kind": "near"
+  },
+  {
+   "id": "e05",
+   "question": "How does Kerberos authentication work?",
+   "kind": "near"
+  },
+  {
+   "id": "e06",
+   "question": "What are the data subject rights under the GDPR?",
+   "kind": "near"
+  },
+  {
+   "id": "e07",
+   "question": "How does the HIPAA Security Rule define a covered entity?",
+   "kind": "near"
+  },
+  {
+   "id": "e08",
+   "question": "What does the Digital Millennium Copyright Act require from website owners?",
+   "kind": "near"
+  },
+  {
+   "id": "e09",
+   "question": "What encryption does WPA3 use for home networks?",
+   "kind": "near"
+  },
+  {
+   "id": "e10",
+   "question": "What was the total cost of the NotPetya attack?",
+   "kind": "near"
+  },
+  {
+   "id": "e11",
+   "question": "How does blockchain consensus work?",
+   "kind": "near"
+  },
+  {
+   "id": "e12",
+   "question": "What does the EU AI Act say about high-risk systems?",
+   "kind": "near"
+  },
+  {
+   "id": "e13",
+   "question": "How do SOC 2 audits assess availability controls?",
+   "kind": "near"
+  },
+  {
+   "id": "e14",
+   "question": "Which controls does COBIT define for IT governance?",
+   "kind": "near"
+  },
+  {
+   "id": "e15",
+   "question": "Apa persyaratan ISO 27001 untuk audit internal?",
+   "kind": "near"
+  },
+  {
+   "id": "e16",
+   "question": "Bagaimana prosedur gugatan perceraian di pengadilan agama?",
+   "kind": "near"
+  },
+  {
+   "id": "e17",
+   "question": "Apa sanksi pelanggaran Undang-Undang Perlindungan Konsumen?",
+   "kind": "near"
+  },
+  {
+   "id": "e18",
+   "question": "Apa itu Bitcoin dan bagaimana cara kerjanya?",
+   "kind": "near"
+  },
+  {
+   "id": "e19",
+   "question": "Berapa denda pelanggaran data pribadi menurut GDPR Eropa?",
+   "kind": "near"
+  },
+  {
+   "id": "e20",
+   "question": "How much does a data breach cost a company on average?",
+   "kind": "near"
+  },
+  {
+   "id": "e21",
+   "question": "Which vendors sell the best incident response software?",
+   "kind": "near"
+  },
+  {
+   "id": "e22",
+   "question": "What salary does a security analyst earn?",
+   "kind": "near"
+  },
+  {
+   "id": "e23",
+   "question": "What is the stock price of Microsoft today?",
+   "kind": "near"
+  },
+  {
+   "id": "e24",
+   "question": "How many data breaches happened in 2023?",
+   "kind": "near"
+  },
+  {
+   "id": "e25",
+   "question": "Berapa gaji rata-rata analis keamanan siber di Indonesia?",
+   "kind": "near"
+  },
+  {
+   "id": "e26",
+   "question": "What is the tallest mountain in the world?",
+   "kind": "easy"
+  },
+  {
+   "id": "e27",
+   "question": "How do vaccines train the immune system?",
+   "kind": "easy"
+  },
+  {
+   "id": "e28",
+   "question": "Who wrote the novel Pride and Prejudice?",
+   "kind": "easy"
+  },
+  {
+   "id": "e29",
+   "question": "Apa ibu kota negara Jepang?",
+   "kind": "easy"
+  },
+  {
+   "id": "e30",
+   "question": "How many players are on a soccer team?",
+   "kind": "easy"
+  }
+ ]
+}

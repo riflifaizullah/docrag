@@ -26,6 +26,7 @@ _reranker_unavailable = False
 
 _sources_cache = database.TTLCache(config.FILENAME_CACHE_TTL_SECONDS)
 _bm25_index_cache: dict = {}
+_vocab_cache: dict = {}
 
 _chroma_thread = ThreadPoolExecutor(max_workers=1, thread_name_prefix="chroma-io")
 
@@ -93,6 +94,7 @@ def list_indexed_sources() -> list[str]:
 def invalidate_sources_cache() -> None:
     _sources_cache.invalidate()
     _bm25_index_cache.clear()  # BM25 indexes are stale the moment the corpus changes
+    _vocab_cache.clear()
 
 
 def _contract_type_words(sources: list[str]) -> set[str]:
@@ -392,6 +394,51 @@ def _bm25_search(question: str, source_filter: Optional[list[str]], k: int) -> l
         {"id": ids[i], "text": docs[i], "meta": metas[i]}
         for i in ranked_idx
         if scores[i] > 0
+    ]
+
+
+# Words that carry no topic, in English and Indonesian.
+_STOPWORDS = frozenset("""
+what which who whom whose when where why how does did the this that these those with from into for and are was were
+been being have has had can could should would will might must shall not any all each some such than then there their
+they them you your our its about according under over also only other more most less very much many
+apa siapa kapan dimana mengapa bagaimana berapa yang dan atau dengan dari untuk pada dalam adalah itu ini oleh para
+telah akan dapat harus sebagai tentang menurut apakah bolehkah
+""".split())
+
+
+def _stem(word: str) -> str:
+    for suffix in ("nya", "ing", "es", "ed", "s"):
+        if word.endswith(suffix) and len(word) - len(suffix) >= 4:
+            return word[: -len(suffix)]
+    return word
+
+
+def corpus_vocabulary() -> tuple[set[str], set[str]]:
+    """Every word in the indexed documents, and the same words with endings removed. Cached until the corpus changes."""
+    if "words" not in _vocab_cache:
+        entry = _get_bm25_index(None)
+        words = {w for doc in entry[2] for w in _tokenize(doc)} if entry else set()
+        _vocab_cache["words"] = (words, {_stem(w) for w in words})
+    return _vocab_cache["words"]
+
+
+def _is_specific(word: str) -> bool:
+    """An acronym ("GDPR"), or a word the embedding model has to cut into three or more pieces ("Kerberos").
+    Everyday words such as "minimum" or "length" are one piece, and a document may simply word them differently.
+    """
+    return word.isupper() or len(get_embedder().tokenizer.tokenize(word.lower())) >= 3
+
+
+def unknown_terms(question: str) -> list[str]:
+    """Specific words in the question that appear nowhere in the indexed documents (for example "Kerberos")."""
+    words, stems = corpus_vocabulary()
+    if not words:
+        return []
+    found = re.findall(r"[^\W\d_]{4,}|\b[A-Z][A-Z0-9]{2,}\b", question)
+    return [
+        w for w in found
+        if (low := w.lower()) not in _STOPWORDS and low not in words and _stem(low) not in stems and _is_specific(w)
     ]
 
 

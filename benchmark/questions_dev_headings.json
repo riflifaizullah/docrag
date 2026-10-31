@@ -1,0 +1,452 @@
+[
+ {
+  "id": "g001",
+  "question": "What does the document say about PURPOSE AND APPLICABILITY?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   11,
+   12
+  ]
+ },
+ {
+  "id": "g002",
+  "question": "What does the document say about KEY RISK CONCEPTS?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   15,
+   16
+  ]
+ },
+ {
+  "id": "g003",
+  "question": "What does the document say about THE USE OF RISK MODELS?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   25,
+   26
+  ]
+ },
+ {
+  "id": "g004",
+  "question": "What does the document say about Risk Assessments at the Organizational Tier?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   27,
+   28
+  ]
+ },
+ {
+  "id": "g005",
+  "question": "What does the document say about TARGETED RISK ASSESSMENTS?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   31,
+   32
+  ]
+ },
+ {
+  "id": "g006",
+  "question": "What does the document say about PREPARING FOR THE RISK ASSESSMENT?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   33,
+   34
+  ]
+ },
+ {
+  "id": "g007",
+  "question": "What does the document say about STEP 2: CONDUCT THE ASSESSMENT?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   39,
+   40
+  ]
+ },
+ {
+  "id": "g008",
+  "question": "What does the document say about MAINTAINING THE RISK ASSESSMENT?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   47,
+   48
+  ]
+ },
+ {
+  "id": "g009",
+  "question": "What does the document say about National Institute of Standards and Technology Special Publication 800-39, Managing?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   50,
+   51
+  ]
+ },
+ {
+  "id": "g010",
+  "question": "What does the document say about Qualitative Semi-Quantitative Description Values Values?",
+  "document": "NIST_SP_800-30r1_Risk_Assessment.pdf",
+  "pages": [
+   82,
+   83
+  ]
+ },
+ {
+  "id": "g011",
+  "question": "What does the document say about Plans9 Systems of Contingency-Related Security Control Baselines Control Control Name?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   21,
+   22
+  ]
+ },
+ {
+  "id": "g012",
+  "question": "What does the document say about Information System Contingency Plan (ISCP)?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   24,
+   25
+  ]
+ },
+ {
+  "id": "g013",
+  "question": "What does the document say about hours 36 hours L L L?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   30,
+   31
+  ]
+ },
+ {
+  "id": "g014",
+  "question": "What does the document say about Chapter 4. Information System Contingency Plan Development?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   48,
+   49
+  ]
+ },
+ {
+  "id": "g015",
+  "question": "What does the document say about Mainframe Contingency Considerations?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   70,
+   71
+  ]
+ },
+ {
+  "id": "g016",
+  "question": "What does the document say about {System name} ISCP Key Personnel Key Personnel Contact Information?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   97,
+   98
+  ]
+ },
+ {
+  "id": "g017",
+  "question": "What does the document say about Personnel Safety and Evacuation?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   127,
+   128
+  ]
+ },
+ {
+  "id": "g018",
+  "question": "What does the document say about CP-2 CONTINGENCY PLAN?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   132,
+   133
+  ]
+ },
+ {
+  "id": "g019",
+  "question": "What does the document say about CP-6 ALTERNATE STORAGE SITE?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   134,
+   135
+  ]
+ },
+ {
+  "id": "g020",
+  "question": "What does the document say about CP-9 INFORMATION SYSTEM BACKUP?",
+  "document": "NIST_SP_800-34r1_Contingency_Planning.pdf",
+  "pages": [
+   136,
+   137
+  ]
+ },
+ {
+  "id": "g021",
+  "question": "What does the document say about Sharing Information With Outside Parties?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   19,
+   20
+  ]
+ },
+ {
+  "id": "g022",
+  "question": "What does the document say about Team Model Selection?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   24,
+   25
+  ]
+ },
+ {
+  "id": "g023",
+  "question": "What does the document say about Incident Response Team Services?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   28,
+   29
+  ]
+ },
+ {
+  "id": "g024",
+  "question": "What does the document say about  Digital forensic software to analyze disk images?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   32,
+   33
+  ]
+ },
+ {
+  "id": "g025",
+  "question": "What does the document say about Evidence Gathering and Handling?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   46,
+   47
+  ]
+ },
+ {
+  "id": "g026",
+  "question": "What does the document say about Containment, Eradication, and Recovery?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   52,
+   53
+  ]
+ },
+ {
+  "id": "g027",
+  "question": "What does the document say about Information Sharing Techniques?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   58,
+   59
+  ]
+ },
+ {
+  "id": "g028",
+  "question": "What does the document say about Business Impact Information?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   59,
+   60
+  ]
+ },
+ {
+  "id": "g029",
+  "question": "What does the document say about Scenario 4: Compromised Database Server?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   64,
+   65
+  ]
+ },
+ {
+  "id": "g030",
+  "question": "What does the document say about Scenario 6: Unauthorized Access to Payroll Records?",
+  "document": "NIST_SP_800-61r2_Incident_Handling.pdf",
+  "pages": [
+   65,
+   66
+  ]
+ },
+ {
+  "id": "g031",
+  "question": "What does the document say about Authenticator Assurance Levels Normative?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   14,
+   15
+  ]
+ },
+ {
+  "id": "g032",
+  "question": "What does the document say about Authenticator Assurance Level 3?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   19,
+   20
+  ]
+ },
+ {
+  "id": "g033",
+  "question": "What does the document say about Memorized Secret Verifiers?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   24,
+   25
+  ]
+ },
+ {
+  "id": "g034",
+  "question": "What does the document say about Single-Factor OTP Verifiers?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   31,
+   32
+  ]
+ },
+ {
+  "id": "g035",
+  "question": "What does the document say about Single-Factor Cryptographic Software Authenticators?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   33,
+   34
+  ]
+ },
+ {
+  "id": "g036",
+  "question": "What does the document say about Multi-Factor Cryptographic Software?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   34,
+   35
+  ]
+ },
+ {
+  "id": "g037",
+  "question": "What does the document say about Multi-Factor Cryptographic Device Verifiers?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   36,
+   37
+  ]
+ },
+ {
+  "id": "g038",
+  "question": "What does the document say about Loss, Theft, Damage, and Unauthorized Duplication?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   46,
+   47
+  ]
+ },
+ {
+  "id": "g039",
+  "question": "What does the document say about Privacy Risk Assessment?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   59,
+   60
+  ]
+ },
+ {
+  "id": "g040",
+  "question": "What does the document say about Out-of-Band Typical Usage?",
+  "document": "NIST_SP_800-63B_Digital_Identity.pdf",
+  "pages": [
+   65,
+   66
+  ]
+ },
+ {
+  "id": "g041",
+  "question": "What does the document say about Additional CE Considerations?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   20,
+   21
+  ]
+ },
+ {
+  "id": "g042",
+  "question": "What does the document say about Chief Information Officer (CIO)?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   23,
+   24
+  ]
+ },
+ {
+  "id": "g043",
+  "question": "What does the document say about System Security Manager/Officer?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   24,
+   25
+  ]
+ },
+ {
+  "id": "g044",
+  "question": "What does the document say about Records Management Officer?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   24,
+   25
+  ]
+ },
+ {
+  "id": "g045",
+  "question": "What does the document say about Data Protection Level?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   28,
+   29
+  ]
+ },
+ {
+  "id": "g046",
+  "question": "What does the document say about Magnetic Disks (flexible or fixed)?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   40,
+   41
+  ]
+ },
+ {
+  "id": "g047",
+  "question": "What does the document say about Cryptographic Erase through the Trusted Computing Group (TCG) Opal Security?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   41,
+   42
+  ]
+ },
+ {
+  "id": "g048",
+  "question": "What does the document say about Electronically Alterable PROM (EAPROM)?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   49,
+   50
+  ]
+ },
+ {
+  "id": "g049",
+  "question": "What does the document say about C.1 NSA Media Destruction Guidance?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   55,
+   56
+  ]
+ },
+ {
+  "id": "g050",
+  "question": "What does the document say about C.3 EPA Information on Electronic Recycling (e-Cycling)?",
+  "document": "NIST_SP_800-88r1_Media_Sanitization.pdf",
+  "pages": [
+   56,
+   57
+  ]
+ }
+]

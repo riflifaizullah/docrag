@@ -483,13 +483,10 @@
   },
   "tp": 79,
   "fn": 0,
-  "fp": 4,
-  "tn": 16,
+  "fp": 1,
+  "tn": 19,
   "answered_by_mistake": [
-   "r15",
-   "r16",
-   "r17",
-   "r19"
+   "r17"
   ]
  },
  {
@@ -976,13 +973,10 @@
   },
   "tp": 78,
   "fn": 1,
-  "fp": 4,
-  "tn": 16,
+  "fp": 1,
+  "tn": 19,
   "answered_by_mistake": [
-   "r15",
-   "r16",
-   "r17",
-   "r19"
+   "r17"
   ]
  },
  {
@@ -1182,7 +1176,7 @@
      "page_hit": true
     },
     {
-     "doc_top1": true,
+     "doc_top1": false,
      "doc_hit": true,
      "page_top1": false,
      "page_hit": true
@@ -1316,7 +1310,7 @@
     {
      "doc_top1": true,
      "doc_hit": true,
-     "page_top1": true,
+     "page_top1": false,
      "page_hit": true
     },
     {
@@ -1356,7 +1350,7 @@
      "page_hit": true
     },
     {
-     "doc_top1": false,
+     "doc_top1": true,
      "doc_hit": true,
      "page_top1": false,
      "page_hit": true
@@ -1368,9 +1362,9 @@
      "page_hit": true
     },
     {
-     "doc_top1": false,
+     "doc_top1": true,
      "doc_hit": true,
-     "page_top1": false,
+     "page_top1": true,
      "page_hit": true
     }
    ],
@@ -1426,7 +1420,7 @@
     {
      "doc_top1": true,
      "doc_hit": true,
-     "page_top1": false,
+     "page_top1": true,
      "page_hit": true
     },
     {
@@ -1675,7 +1669,7 @@
     },
     {
      "doc_top1": false,
-     "doc_hit": true,
+     "doc_hit": false,
      "page_top1": false,
      "page_hit": false
     },
@@ -1796,8 +1790,8 @@
     {
      "doc_top1": true,
      "doc_hit": true,
-     "page_top1": true,
-     "page_hit": true
+     "page_top1": false,
+     "page_hit": false
     },
     {
      "doc_top1": true,
@@ -1849,21 +1843,21 @@
     },
     {
      "doc_top1": false,
-     "doc_hit": true,
+     "doc_hit": false,
      "page_top1": false,
      "page_hit": false
     },
     {
      "doc_top1": true,
      "doc_hit": true,
-     "page_top1": false,
-     "page_hit": false
+     "page_top1": true,
+     "page_hit": true
     },
     {
-     "doc_top1": false,
+     "doc_top1": true,
      "doc_hit": true,
-     "page_top1": false,
-     "page_hit": false
+     "page_top1": true,
+     "page_hit": true
     }
    ],
    "hand-written": [
@@ -1919,7 +1913,7 @@
      "doc_top1": true,
      "doc_hit": true,
      "page_top1": false,
-     "page_hit": false
+     "page_hit": true
     },
     {
      "doc_top1": true,
@@ -1959,8 +1953,8 @@
     }
    ]
   },
-  "tp": 74,
-  "fn": 5,
+  "tp": 75,
+  "fn": 4,
   "fp": 3,
   "tn": 17,
   "answered_by_mistake": [
@@ -2453,13 +2447,10 @@
   },
   "tp": 79,
   "fn": 0,
-  "fp": 4,
-  "tn": 16,
+  "fp": 1,
+  "tn": 19,
   "answered_by_mistake": [
-   "r15",
-   "r16",
-   "r17",
-   "r19"
+   "r17"
   ]
  },
  {
@@ -2946,13 +2937,10 @@
   },
   "tp": 79,
   "fn": 0,
-  "fp": 4,
-  "tn": 16,
+  "fp": 1,
+  "tn": 19,
   "answered_by_mistake": [
-   "r15",
-   "r16",
-   "r17",
-   "r19"
+   "r17"
   ]
  }
 ]

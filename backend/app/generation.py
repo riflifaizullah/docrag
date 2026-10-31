@@ -264,13 +264,19 @@ def looks_like_hedging(answer: str) -> bool:
     return any(phrase in lower for phrase in lang.get().HEDGING_PHRASES)
 
 
-def _passes_relevance_gate(hits: list[dict]) -> bool:
+def _passes_relevance_gate(hits: list[dict], question: Optional[str] = None) -> bool:
     if not hits:
         return False
     max_raw = max(h["score"] for h in hits)
     rerank_scores = [h["rerank_score"] for h in hits if "rerank_score" in h]
     max_rerank = max(rerank_scores) if rerank_scores else float("-inf")
-    return max_raw >= config.RELEVANCE_MIN_SCORE or max_rerank >= config.RELEVANCE_MIN_RERANK_SCORE
+    if max_raw < config.RELEVANCE_MIN_SCORE and max_rerank < config.RELEVANCE_MIN_RERANK_SCORE:
+        return False
+    # A topic word found nowhere in the documents ("Kerberos") means the subject is probably not covered,
+    # however similar the nearest passages look. Only a very strong match overrides that.
+    if question and rerank_scores and max_rerank < config.UNKNOWN_TERM_RERANK_MIN and retrieval.unknown_terms(question):
+        return False
+    return True
 
 
 def generate_answer(
@@ -288,7 +294,7 @@ def generate_answer(
             log_id = database.log_answer(session_id, question, message, None, False, False, True, wide_hits)
             return ClarificationNeeded(message=message, candidates=ambiguity.candidates, log_id=log_id)
 
-        if not _passes_relevance_gate(wide_hits):
+        if not _passes_relevance_gate(wide_hits, question):
             answer = L.NOT_FOUND
             log_id = database.log_answer(session_id, question, answer, 0.0, False, True, False, [])
             return Answer(text=answer, sources=[], log_id=log_id)

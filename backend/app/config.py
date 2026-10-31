@@ -53,6 +53,8 @@ RERANK_MODEL = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"  # about 470 MB, mul
 # OR the best rerank score reaches the second. Otherwise the system refuses without calling the model.
 RELEVANCE_MIN_SCORE = 0.62
 RELEVANCE_MIN_RERANK_SCORE = 0.0
+# A question with a word found nowhere in the documents is answered only if the best rerank score reaches this.
+UNKNOWN_TERM_RERANK_MIN = 3.0
 
 # Hybrid search: BM25 keyword candidates are merged with vector candidates by reciprocal rank fusion.
 HYBRID_SEARCH_ENABLED = True

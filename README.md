@@ -101,7 +101,7 @@ More diagrams (sequence of a request, ingestion, data model, module map) and a w
 
 ## How it was tested
 
-**Public benchmark.** [benchmark/](benchmark/README.md) holds a test anyone can rerun: 9 public documents (NIST guides and two Indonesian laws), 79 questions with known pages and 20 questions that should be refused. It measures retrieval and the relevance gate, not the answers a language model writes. In it, the right page was among the top 8 passages for 99 percent of the answerable questions, against 73 percent for vector search alone, and all 14 off-topic questions were refused. But 4 of the 6 near-miss questions (a related topic the documents do not cover) passed the relevance gate, so refusing those is left to the model. The sample is small, so read the [limits](benchmark/README.md#what-this-does-not-show) before the numbers.
+**Public benchmark.** [benchmark/](benchmark/README.md) holds a test anyone can rerun: 9 public documents (NIST guides and two Indonesian laws), 79 questions with known pages and 20 questions that should be refused. It measures retrieval and the relevance gate, not the answers a language model writes. In it, the right page was among the top 8 passages for 99 percent of the answerable questions, against 73 percent for vector search alone, and all 14 off-topic questions were refused. The first run also found that 4 of the 6 near-miss questions (a related topic the documents do not cover) passed the relevance gate. I changed the gate to treat a topic word found nowhere in the documents as a warning sign, tuned on a separate question set, and 5 of the 6 are now refused and no answerable test question was lost. The sample is small, so read the [limits](benchmark/README.md#what-this-does-not-show) before the numbers.
 
 **Earlier private run.**
 
@@ -172,7 +172,7 @@ The website talks to the backend through an `IApiClient` interface, so its chat 
 - The model and reranker need a reasonably capable machine, and a full answer takes a few seconds to about half a minute locally.
 - The relevance gate was tuned on a larger document set. On a very small set such as the bundled samples, a vaguely worded question can be refused even when the right document ranks first. The thresholds are in `backend/app/config.py`.
 - Heading patterns, question splitting and refusal phrases cover English and Indonesian only. The answer language is guessed from common words, so a very short or mixed-language question falls back to `DOCRAG_LANG`.
-- Retrieval depends on vocabulary. A question that says "hotel" can miss a passage that only says "accommodation", because the reranker scores the two words as unrelated.
+- Retrieval depends on vocabulary. A question that says "hotel" can miss a passage that only says "accommodation", because the reranker scores the two words as unrelated. The relevance gate also treats a specific word (an acronym or a rare word) that appears nowhere in your documents as a reason to refuse unless the best passage matches very strongly, so a question that uses a rare word the documents never use can be refused even when the answer is there.
 - The evaluation harness used during development ran on a private document set and is not part of this repository, so the earlier private-run results in "How it was tested" cannot be reproduced from here. The public benchmark can.
 - It is not deployed publicly.
 

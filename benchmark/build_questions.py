@@ -37,6 +37,8 @@ def main() -> None:
         key = (clean(h["text"]) or "").lower()
         counts[key] = counts.get(key, 0) + 1
 
+    dev = "dev" in sys.argv[1:]  # a second, non-overlapping pick used to choose settings, never to report
+    test_texts = {q["question"] for q in json.loads((HERE / "questions_headings.json").read_text(encoding="utf-8"))} if dev else set()
     questions = []
     for source in sorted(english):
         rows, seen = [], set()
@@ -46,14 +48,16 @@ def main() -> None:
                 seen.add(text.lower())
                 rows.append((text, h["page"]))
         step = max(1, len(rows) // PER_DOCUMENT)
-        for text, page in rows[::step][:PER_DOCUMENT]:
+        for text, page in rows[step // 2 if dev else 0::step][:PER_DOCUMENT]:
+            if f"What does the document say about {text}?" in test_texts:
+                continue
             questions.append({
-                "id": f"h{len(questions) + 1:03d}",
+                "id": f"{'g' if dev else 'h'}{len(questions) + 1:03d}",
                 "question": f"What does the document say about {text}?",
                 "document": source,
                 "pages": [page, page + 1],
             })
-    (HERE / "questions_headings.json").write_text(json.dumps(questions, indent=1, ensure_ascii=False), encoding="utf-8")
+    (HERE / ("questions_dev_headings.json" if dev else "questions_headings.json")).write_text(json.dumps(questions, indent=1, ensure_ascii=False), encoding="utf-8")
     print(len(questions), "questions")
 
 

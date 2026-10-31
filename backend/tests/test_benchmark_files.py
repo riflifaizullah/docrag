@@ -12,7 +12,8 @@ def _load(name):
 def test_every_question_points_at_a_listed_document():
     documents = {d["file"] for d in _load("documents.json")}
     manual = _load("questions_manual.json")
-    questions = _load("questions_headings.json") + manual["answerable"]
+    dev = _load("questions_dev.json")
+    questions = _load("questions_headings.json") + _load("questions_dev_headings.json") + manual["answerable"] + dev["answerable"]
     assert {q["document"] for q in questions} <= documents
 
 

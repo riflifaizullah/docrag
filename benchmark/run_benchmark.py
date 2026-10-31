@@ -70,7 +70,7 @@ def evaluate(variant: str, questions: dict) -> dict:
 
     def ask(question: str) -> tuple[list[dict], bool]:
         hits = retrieval.retrieve(question)
-        return hits, generation._passes_relevance_gate(hits)
+        return hits, generation._passes_relevance_gate(hits, question)
 
     rows = {"heading": [], "hand-written": []}
     tp = fn = fp = tn = 0
